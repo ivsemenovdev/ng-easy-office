@@ -54,7 +54,9 @@ npm install
 npm start
 ```
 
-UI: [http://localhost:4200/](http://localhost:4200/)
+UI: [http://localhost:4200/](http://localhost:4200/) — на главной таблица субъектов РФ из API (нужен запущенный backend).
+
+Запросы к API проксируются через `proxy.conf.json` (`/api` → `localhost:3000`).
 
 ```bash
 npm run build

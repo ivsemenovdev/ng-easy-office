@@ -136,8 +136,17 @@ npm run dev
 
 ---
 
-## 7. История изменений
+## 7. Фронтенд
+
+Главная страница Angular загружает `GET /api/regions?country_iso=RU` (компонент `src/app/regions/regions-table.component.ts`).
+
+В dev `ng serve` проксирует `/api` → `http://localhost:3000` (`proxy.conf.json`).
+
+---
+
+## 8. История изменений
 
 | Дата | Версия | Изменение |
 |------|--------|-----------|
 | 2026-06-01 | 0.1 | Базовый CRUD: countries, regions, health |
+| 2026-06-01 | 0.2 | Таблица регионов на главной (Angular) |
