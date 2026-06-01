@@ -1,59 +1,128 @@
 # NgEasyOffice
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.13.
+Веб-приложение для офисных задач. Сейчас в репозитории — **фронтенд** (Angular) и **слой данных** (PostgreSQL: справочник регионов, миграции, политика доступа). Бэкенд API пока не подключён.
 
-## Development server
+## Стек
 
-To start a local development server, run:
+| Слой | Технологии |
+|------|------------|
+| UI | [Angular](https://angular.dev/) 21, [Taiga UI](https://taiga-ui.dev/) 5 |
+| Тесты | [Vitest](https://vitest.dev/) |
+| БД | PostgreSQL 18+ (локально) |
+| Стили | Less (тема Taiga UI) |
+
+## Требования
+
+- **Node.js** 20+ и **npm** 10+
+- **PostgreSQL** (локально), база по умолчанию: `donetsk_test`
+- **psql** в `PATH` — для миграций и сидов
+
+## Быстрый старт
+
+### 1. Фронтенд
 
 ```bash
-ng serve
+npm install
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Приложение: [http://localhost:4200/](http://localhost:4200/)
 
-## Code scaffolding
+Другие команды:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+```bash
+npm run build    # production-сборка в dist/
+npm test         # unit-тесты (Vitest)
+```
+
+### 2. База данных
+
+Создайте базу (если ещё нет):
+
+```bash
+createdb donetsk_test
+```
+
+Примените миграции и справочник регионов:
+
+```bash
+./database/scripts/migrate.sh
+psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
+```
+
+Переменная `DB` задаёт имя базы:
+
+```bash
+DB=donetsk_test ./database/scripts/migrate.sh
+```
+
+Проверка:
+
+```bash
+psql -d donetsk_test -c "SELECT version FROM schema_migrations ORDER BY version;"
+psql -d donetsk_test -c "SELECT COUNT(*) FROM geo_regions;"
+# ожидается: 2 миграции, 89 регионов
+```
+
+## Структура репозитория
+
+```
+ng-easy-office/
+├── src/                    # Angular-приложение
+├── database/
+│   ├── migrations/         # DDL (версионируемые)
+│   ├── seeds/              # Начальные данные
+│   └── scripts/            # migrate.sh, generate_russia_seed.py
+├── docs/ai/                # Спецификации для разработки и AI
+├── public/                 # Статические файлы
+└── angular.json
+```
+
+## База данных
+
+- **Политика:** схема меняется только через файлы в `database/migrations/`; журнал — таблица `schema_migrations`.
+- **Роли:** `ng_migrator` (DDL, сиды), `ng_app` (DML; справочники `geo_*` — только чтение).
+- **Справочник:** `geo_countries`, `geo_regions` — 89 субъектов РФ + возможность расширения на другие страны.
+
+Подробности:
+
+- [docs/ai/database-policy.md](docs/ai/database-policy.md) — миграции, роли, восстановление БД
+- [docs/ai/database-regions.md](docs/ai/database-regions.md) — модель регионов, запросы, сиды
+
+Пересборка SQL-сида регионов:
+
+```bash
+python3 database/scripts/generate_russia_seed.py
+```
+
+## Документация для AI и команды
+
+Каталог [docs/ai/](docs/ai/) — источник правды для агентов и разработчиков. **Любые изменения схемы, API и доменной логики нужно отражать там** (см. [docs/ai/README.md](docs/ai/README.md)).
+
+## Разработка
+
+### Генерация компонентов
 
 ```bash
 ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
 ng generate --help
 ```
 
-## Building
+### Рекомендуемый порядок при изменении БД
 
-To build the project run:
+1. Прочитать [database-policy.md](docs/ai/database-policy.md)
+2. Добавить миграцию `database/migrations/NNN_....sql` и запись в `schema_migrations`
+3. Обновить доменный документ в `docs/ai/`
+4. Выполнить `./database/scripts/migrate.sh`
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Восстановление «чистой» локальной БД
 
 ```bash
-ng test
+dropdb donetsk_test && createdb donetsk_test
+./database/scripts/migrate.sh
+psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 ```
 
-## Running end-to-end tests
+## Лицензия
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Проект частный (`private` в `package.json`).
