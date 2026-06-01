@@ -2,7 +2,7 @@
 
 > **Назначение:** единый источник правды для агентов и разработчиков при проектировании API, миграций, сидов и UI выбора региона.  
 > **Проект:** `ng-easy-office` — фронтенд (Angular 21 + Taiga UI). Бэкенд в репозитории пока отсутствует; БД используется локально.  
-> **Статус схемы:** миграции `001`, `002` (см. [database-policy.md](./database-policy.md)); сид `002_russia_federal_subjects.sql` — **89 субъектов РФ** + страна «Россия».
+> **Статус схемы:** миграции `001`–`003`; сид регионов — **89** записей; CRUD — [api-backend.md](./api-backend.md).
 
 ---
 
@@ -282,7 +282,7 @@ SELECT * FROM geo_regions WHERE parent_id = $1 AND is_active = TRUE ORDER BY sor
 
 | Аспект | Рекомендация |
 |--------|----------------|
-| API | REST/GraphQL endpoint вида `GET /api/geo/regions?country=RU&level=federal_subject` (когда появится бэкенд) |
+| API | [api-backend.md](./api-backend.md): `GET /api/regions?country_iso=RU&level=federal_subject` |
 | Модель TS | `GeoRegion { id, code, nameRu, nameShortRu?, regionType?, countryIso2 }` |
 | UI | Taiga UI combobox/autocomplete; кэшировать справочник в `signal`/сервисе |
 | i18n | Пока `name_ru`; при `name_en` — переключатель локали |
@@ -310,6 +310,7 @@ SELECT * FROM geo_regions WHERE parent_id = $1 AND is_active = TRUE ORDER BY sor
 | 2026-06-01 | 1.1 | Сид `002_russia_federal_subjects.sql`: 83 ISO + 6 внутренних кодов |
 | 2026-06-01 | 1.2 | Правило: все изменения документировать (ссылка на `docs/ai/README.md`) |
 | 2026-06-01 | 1.3 | Ссылка на `database-policy.md` (роли, журнал миграций) |
+| 2026-06-01 | 1.4 | REST CRUD: `api-backend.md` |
 
 ---
 
