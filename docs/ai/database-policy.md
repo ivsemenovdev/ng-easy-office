@@ -2,7 +2,7 @@
 
 > **Назначение:** защита структуры БД в разработке — схема меняется только осознанно, через версионированные миграции.  
 > **Проект:** ng-easy-office · база по умолчанию: `donetsk_test`  
-> **Статус:** миграции `001`, `002` — см. `schema_migrations`
+> **Статус:** миграции `001`–`003` — см. `schema_migrations`
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-----------------|
 | Структура не меняется «случайно» | DDL только ролью `ng_migrator`, только файлы в `database/migrations/` |
 | Одинаковая схема у всех | Журнал `schema_migrations` + скрипт `database/scripts/migrate.sh` |
-| Справочники не портятся в рантайме | `ng_app` — только `SELECT` на `geo_countries`, `geo_regions` |
+| Справочники через API | `ng_app` — DML на `geo_*` (миграция `003`; см. [api-backend.md](./api-backend.md)) |
 | Изменения прозрачны | Документация в `docs/ai/` + история в конце каждого документа |
 
 ---
@@ -22,7 +22,7 @@
 | Роль | Кто использует | Права |
 |------|----------------|--------|
 | `ng_migrator` | Разработчик при миграциях/сидах, CI deploy | `CREATE`/`ALTER`/`DROP`, полный доступ к таблицам и `schema_migrations` |
-| `ng_app` | Бэкенд, интеграционные тесты, повседневные запросы | `SELECT`/`INSERT`/`UPDATE`/`DELETE` на бизнес-таблицы; **без DDL**; на `geo_*` — **только `SELECT`** |
+| `ng_app` | [Backend API](./api-backend.md) | `SELECT`/`INSERT`/`UPDATE`/`DELETE` на `geo_*` и будущие бизнес-таблицы; **без DDL** |
 
 Роли создаются в `002_schema_migrations_and_roles.sql` как `NOINHERIT` без пароля.
 
@@ -121,3 +121,4 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 | Дата | Версия | Изменение |
 |------|--------|-----------|
 | 2026-06-01 | 1.0 | Политика БД: `schema_migrations`, роли `ng_migrator` / `ng_app`, `migrate.sh` |
+| 2026-06-01 | 1.1 | `003_geo_dml_for_app` — DML на `geo_*` для backend |

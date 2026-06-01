@@ -13,6 +13,7 @@
 | Скрипты генерации, пути к артефактам | Тот же доменный документ и § «Связанные файлы» |
 | Поведение API, контракты (когда появятся) | Доменный документ или отдельная спецификация в `docs/ai/` |
 | Политика БД, роли, миграции | [database-policy.md](./database-policy.md) |
+| REST API (Node.js) | [api-backend.md](./api-backend.md) |
 
 Минимум при каждом изменении:
 
@@ -29,6 +30,7 @@
 |----------|----------|
 | [database-policy.md](./database-policy.md) | Защита схемы: роли, `schema_migrations`, порядок миграций и сидов |
 | [database-regions.md](./database-regions.md) | Схема PostgreSQL: страны и регионы (`geo_countries`, `geo_regions`), DDL, сиды, запросы |
+| [api-backend.md](./api-backend.md) | Node.js API: CRUD `/api/countries`, `/api/regions` |
 
 ```bash
 # Миграции (001, 002, …)
