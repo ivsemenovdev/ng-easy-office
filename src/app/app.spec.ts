@@ -1,23 +1,63 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideTaiga } from '@taiga-ui/core';
 import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+
 import { App } from './app';
+import { RegionsApiService } from './core/services/regions-api.service';
+
+function mockMatchMedia(): void {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      dispatchEvent: () => false,
+    }),
+  });
+}
 
 describe('App', () => {
   beforeEach(async () => {
+    mockMatchMedia();
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [
+        provideTaiga(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: RegionsApiService,
+          useValue: {
+            listRussia: () =>
+              of({
+                items: [],
+                total: 0,
+                limit: 500,
+                offset: 0,
+              }),
+          },
+        },
+      ],
     }).compileComponents();
   });
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render regions table heading', async () => {
     const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ng-easy-office');
+    expect(compiled.textContent).toContain('Субъекты Российской Федерации');
   });
 });

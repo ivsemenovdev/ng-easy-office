@@ -1,13 +1,13 @@
 import { TuiRoot } from '@taiga-ui/core';
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { RegionsTableComponent } from './regions/regions-table.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TuiRoot],
+  imports: [RouterOutlet, TuiRoot, RegionsTableComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('ng-easy-office');
-}
+export class App {}
