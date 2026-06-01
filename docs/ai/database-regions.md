@@ -2,7 +2,7 @@
 
 > **Назначение:** единый источник правды для агентов и разработчиков при проектировании API, миграций, сидов и UI выбора региона.  
 > **Проект:** `ng-easy-office` — фронтенд (Angular 21 + Taiga UI). Бэкенд в репозитории пока отсутствует; БД используется локально.  
-> **Статус схемы:** миграция `001_geo_regions.sql` применена; сид `002_russia_federal_subjects.sql` — **89 субъектов РФ** + страна «Россия».
+> **Статус схемы:** миграции `001`, `002` (см. [database-policy.md](./database-policy.md)); сид `002_russia_federal_subjects.sql` — **89 субъектов РФ** + страна «Россия».
 
 ---
 
@@ -296,7 +296,7 @@ SELECT * FROM geo_regions WHERE parent_id = $1 AND is_active = TRUE ORDER BY sor
 
 1. **Не менять** устоявшиеся `code` после публикации — только deprecate через `is_active = false`.
 2. Новые страны — сначала `geo_countries`, потом регионы.
-3. Миграции — только в `database/migrations/`, сиды — в `database/seeds/`, нумерация по порядку.
+3. Миграции — только в `database/migrations/`, сиды — в `database/seeds/`; порядок — [database-policy.md](./database-policy.md).
 4. После DDL проверять: `\d geo_regions`, `\d geo_countries`, количество субъектов РФ.
 5. **Документировать каждое изменение** в этом файле: актуализировать §§ 3–7 при смене схемы/сида; строка в §9; статус в шапке; при новых файлах — §10.
 
@@ -309,6 +309,7 @@ SELECT * FROM geo_regions WHERE parent_id = $1 AND is_active = TRUE ORDER BY sor
 | 2026-06-01 | 1.0 | Первичная спецификация: `geo_countries`, `geo_regions`, enum уровней, DDL, сиды РФ |
 | 2026-06-01 | 1.1 | Сид `002_russia_federal_subjects.sql`: 83 ISO + 6 внутренних кодов |
 | 2026-06-01 | 1.2 | Правило: все изменения документировать (ссылка на `docs/ai/README.md`) |
+| 2026-06-01 | 1.3 | Ссылка на `database-policy.md` (роли, журнал миграций) |
 
 ---
 

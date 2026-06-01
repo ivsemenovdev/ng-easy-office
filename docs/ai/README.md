@@ -12,6 +12,7 @@
 | Новая подсистема / домен | Новый `docs/ai/<тема>.md` + строка в таблице «Файлы» ниже |
 | Скрипты генерации, пути к артефактам | Тот же доменный документ и § «Связанные файлы» |
 | Поведение API, контракты (когда появятся) | Доменный документ или отдельная спецификация в `docs/ai/` |
+| Политика БД, роли, миграции | [database-policy.md](./database-policy.md) |
 
 Минимум при каждом изменении:
 
@@ -26,10 +27,14 @@
 
 | Документ | Описание |
 |----------|----------|
+| [database-policy.md](./database-policy.md) | Защита схемы: роли, `schema_migrations`, порядок миграций и сидов |
 | [database-regions.md](./database-regions.md) | Схема PostgreSQL: страны и регионы (`geo_countries`, `geo_regions`), DDL, сиды, запросы |
 
 ```bash
-# Применить сиды субъектов РФ (после миграции 001)
+# Миграции (001, 002, …)
+./database/scripts/migrate.sh
+
+# Сиды (после миграций)
 psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 ```
 
@@ -39,4 +44,4 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 - **БД (локально):** PostgreSQL, база `donetsk_test`.
 - **SQL-миграции:** `database/migrations/`.
 
-При работе с БД: прочитать доменный документ в `docs/ai/` → внести изменения → обновить документ и историю → применить миграции из `database/migrations/`.
+При работе с БД: [database-policy.md](./database-policy.md) → доменный документ в `docs/ai/` → миграция/сид → обновить документацию и историю → `./database/scripts/migrate.sh`.
