@@ -1,6 +1,6 @@
 <section class="export-section">
   <header class="export-header">
-    <h1 tuiTitle>Экспорт регионов в Word</h1>
+    <h2 tuiTitle>Экспорт регионов в Word</h2>
   </header>
 
   <p class="export-description">
@@ -15,7 +15,7 @@
       tuiButton
       type="button"
       appearance="primary"
-      size="m"
+      size="s"
       (click)="download()"
     >
       Скачать .docx
@@ -26,7 +26,4 @@
     <p class="export-error" role="alert">{{ message }}</p>
   }
 
-  <p class="export-nav">
-    <a routerLink="/">← К списку регионов</a>
-  </p>
 </section>

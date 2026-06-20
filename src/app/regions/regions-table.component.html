@@ -1,86 +1,47 @@
 <section class="regions-section">
-  <header class="regions-header">
-    <h1 tuiTitle>
-      Субъекты Российской Федерации
-      @if (!loading() && !error()) {
-        <span class="regions-count">({{ total() }})</span>
-      }
-    </h1>
-    <div class="regions-actions">
-      <a routerLink="/regions-export" tuiButton appearance="primary" size="s">
-        Экспорт Word
-      </a>
-      <button tuiButton type="button" appearance="secondary" size="s" (click)="load()">
-        Обновить
-      </button>
-    </div>
-  </header>
-
-  <!-- @if (loading()) {
-    <tui-loader class="regions-loader" />
-  } @else if (error(); as message) {
-    <p class="regions-error" role="alert">{{ message }}</p>
-  } @else {
-    <div class="regions-table-wrap">
-      <table class="regions-table">
-        <thead>
-          <tr>
-            <th scope="col">№</th>
-            <th scope="col">Код</th>
-            <th scope="col">Наименование</th>
-            <th scope="col">Кратко</th>
-            <th scope="col">Тип</th>
-            <th scope="col">Активен</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of regions(); track row.id) {
-            <tr>
-              <td>{{ row.sort_order ?? '—' }}</td>
-              <td><code>{{ row.code }}</code></td>
-              <td>{{ row.name_ru }}</td>
-              <td>{{ row.name_short_ru ?? '—' }}</td>
-              <td>{{ row.region_type ?? '—' }}</td>
-              <td>{{ activeLabel(row.is_active) }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  } -->
-
   @if (loading()) {
     <tui-loader class="regions-loader" />
   } @else if (error(); as message) {
     <p class="regions-error" role="alert">{{ message }}</p>
   } @else {
-    <!-- <div class="regions-table-wrap"> -->
-      <table tuiTable>
-        <thead>
-          <tr>
-            <th tuiTh>№</th>
-            <th tuiTh>Код</th>
-            <th tuiTh>Наименование</th>
-            <th tuiTh>Кратко</th>
-            <th tuiTh>Тип</th>
-            <th tuiTh>Активен</th>
-          </tr>
-        </thead>
-        <tbody tuiTbody>
-          @for (row of regions(); track row.id) {
-            <tr>
-              <td tuiTd>{{ row.sort_order ?? '—' }}</td>
-              <td tuiTd><code>{{ row.code }}</code></td>
-              <td tuiTd>{{ row.name_ru }}</td>
-              <td tuiTd>{{ row.name_short_ru ?? '—' }}</td>
-              <td tuiTd>{{ row.region_type ?? '—' }}</td>
-              <td tuiTd>{{ activeLabel(row.is_active) }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    <!-- </div> -->
+    <tui-accordion>
+          <button [tuiAccordion]="false">
+            Субъекты Российской Федерации
+            @if (!loading() && !error()) {
+              <span class="regions-count">({{ total() }})</span>
+            }
+          </button>
+          <tui-expand>
+            <app-regions-export></app-regions-export>  
+            <table tuiTable>
+              <thead>
+                <tr>
+                  <th tuiTh>№</th>
+                  <th tuiTh>Код</th>
+                  <th tuiTh>Наименование</th>
+                  <th tuiTh>Кратко</th>
+                  <th tuiTh>Тип</th>
+                  <th tuiTh>Активен</th>
+                </tr>
+              </thead>
+              <tbody tuiTbody>
+                @for (row of regions(); track row.id) {
+                  <tr>
+                    <td tuiTd>{{ row.sort_order ?? '—' }}</td>
+                    <td tuiTd><code>{{ row.code }}</code></td>
+                    <td tuiTd>{{ row.name_ru }}</td>
+                    <td tuiTd>{{ row.name_short_ru ?? '—' }}</td>
+                    <td tuiTd>{{ row.region_type ?? '—' }}</td>
+                    <td tuiTd>{{ activeLabel(row.is_active) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </tui-expand>
+  </tui-accordion>
   }
-  
+</section>
 
+<section>
+  <app-hospitals></app-hospitals>
 </section>

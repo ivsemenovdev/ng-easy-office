@@ -1,0 +1,190 @@
+ <section class="institutions-section">
+    <h1 class="regions-subtitle">Список лечебных учреждений в регионе</h1>
+    <p class="institutions-description">
+      Выберите регион, чтобы просмотреть учреждения, добавить новые или удалить существующие.
+    </p>
+
+    @if (!loading()) {  
+      <label class="institutions-select-label">
+        <span>Регион</span>
+        <select class="institutions-select" (change)="onRegionChange($event)">
+          <option value="">— выберите регион —</option>
+          @for (region of regions(); track region.id) {
+            @if (region.is_active) {
+              <option [value]="region.id">{{ region.name_ru }}</option>
+            }
+          }
+        </select>
+      </label>
+    }
+
+    @if (hospitalError(); as message) {
+      <p class="regions-error" role="alert">{{ message }}</p>
+    }
+
+    @if (hospitalSuccess(); as message) {
+      <p class="institutions-success" role="status">{{ message }}</p>
+    }
+
+    @if (selectedRegionId()) {
+      @if (loadingHospitals()) {
+        <tui-loader class="regions-loader" />
+      } @else {
+        <div class="institutions-add">
+          <h3 class="institutions-add-title">Добавить учреждение</h3>
+          <div class="institutions-add-form">
+            <label class="institutions-field">
+              <span>Название</span>
+              <input
+                class="institutions-input"
+                type="text"
+                [(ngModel)]="newName"
+                name="hospitalName"
+                placeholder="ГБУЗ «Городская больница № 1»"
+              />
+            </label>
+            <label class="institutions-field">
+              <span>Адрес</span>
+              <input
+                class="institutions-input"
+                type="text"
+                [(ngModel)]="newAddress"
+                name="hospitalAddress"
+                placeholder="Необязательно"
+              />
+            </label>
+            @if (saving()) {
+              <tui-loader class="institutions-loader-inline" />
+            } @else {
+              <button
+                tuiButton
+                type="button"
+                appearance="primary"
+                size="m"
+                (click)="addHospital()"
+              >
+                Добавить
+              </button>
+            }
+          </div>
+        </div>
+
+        <h3 class="institutions-list-title">
+          Учреждения региона
+          <span class="regions-count">({{ hospitals().length }})</span>
+        </h3>
+
+        @if (hospitals().length === 0) {
+          <p class="institutions-empty">В этом регионе учреждений пока нет</p>
+        } @else {
+          <div class="institutions-table-wrap">
+            <table class="institutions-table">
+              <thead>
+                <tr>
+                  <th scope="col">Название</th>
+                  <th scope="col">Адрес</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (hospital of hospitals(); track hospital.id) {
+                  <tr>
+                    <td>{{ hospital.name }}</td>
+                    <td>{{ displayAddress(hospital.address) }}</td>
+                    <td class="institutions-actions">
+                      @if (deletingId() === hospital.id) {
+                        <tui-loader size="s" />
+                      } @else {
+                        <button
+                          tuiButton
+                          type="button"
+                          appearance="secondary"
+                          size="s"
+                          (click)="deleteHospital(hospital)"
+                        >
+                          Удалить
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+    }
+</section>
+
+
+<section class="regions-section">
+    @if (loading()) {
+      <tui-loader class="regions-loader" />
+    } @else if (error(); as message) {
+      <p class="regions-error" role="alert">{{ message }}</p>
+    } @else {
+      <tui-accordion>
+        <button [tuiAccordion]="false">    Субъекты Российской Федерации
+          @if (!loading() && !error()) {
+            <span class="regions-count">({{ total() }})</span>
+          }</button>
+            <tui-expand>
+      <table tuiTable>
+        <thead>
+          <tr>
+            <th tuiTh>№</th>
+            <th tuiTh>Код</th>
+            <th tuiTh>Наименование</th>
+            <th tuiTh>Кратко</th>
+            <th tuiTh>Тип</th>
+            <th tuiTh>Активен</th>
+          </tr>
+        </thead>
+        <tbody tuiTbody>
+          @for (row of regions(); track row.id) {
+            <tr>
+              <td tuiTd>{{ row.sort_order ?? '—' }}</td>
+              <td tuiTd><code>{{ row.code }}</code></td>
+              <td tuiTd>{{ row.name_ru }}</td>
+              <td tuiTd>{{ row.name_short_ru ?? '—' }}</td>
+              <td tuiTd>{{ row.region_type ?? '—' }}</td>
+              <td tuiTd>{{ activeLabel(row.is_active) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+            </tui-expand>
+    </tui-accordion>
+  
+    <section class="export-section">
+
+      <header class="export-header">
+        <h1 tuiTitle>Экспорт регионов в Word</h1>
+      </header>
+    
+      <p class="export-description">
+        Скачивается документ Word (.docx) со всеми субъектами Российской Федерации из базы
+        данных.
+      </p>
+    
+      @if (downloading()) {
+        <tui-loader class="export-loader" />
+      } @else {
+        <button
+          tuiButton
+          type="button"
+          appearance="primary"
+          size="m"
+          (click)="download()"
+        >
+          Скачать .docx
+        </button>
+      }
+    
+      @if (error(); as message) {
+        <p class="export-error" role="alert">{{ message }}</p>
+      }
+
+    </section>
+    }
+</section>

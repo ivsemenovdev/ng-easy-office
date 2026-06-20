@@ -4,14 +4,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TuiButton, TuiLoader, TuiTitle } from '@taiga-ui/core';
 
 import { RegionsApiService } from '../core/services/regions-api.service';
 
 @Component({
   selector: 'app-regions-export',
-  imports: [RouterLink, TuiButton, TuiLoader, TuiTitle],
+  imports: [TuiButton, TuiLoader, TuiTitle],
   templateUrl: './regions-export.component.html',
   styleUrl: './regions-export.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
