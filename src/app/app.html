@@ -1,6 +1,14 @@
 <tui-root>
+  <nav class="app-nav">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Регионы
+    </a>
+    <a routerLink="/regions-export" routerLinkActive="active">Экспорт Word</a>
+    <a routerLink="/hospitals" routerLinkActive="active">Больницы</a>
+    <a routerLink="/diagnostic-import" routerLinkActive="active">Импорт акта</a>
+    <a routerLink="/hospital-acts" routerLinkActive="active">Акты больниц</a>
+  </nav>
   <main class="main">
-    <app-regions-table />
+    <router-outlet />
   </main>
-  <router-outlet />
 </tui-root>

@@ -4,14 +4,18 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TuiButton, TuiLoader, TuiTitle } from '@taiga-ui/core';
+import {TuiAccordion} from '@taiga-ui/kit';
+import {KeyValuePipe} from '@angular/common';
+import {TuiTable} from '@taiga-ui/addon-table';
 
 import type { GeoRegion } from '../core/models/geo.model';
 import { RegionsApiService } from '../core/services/regions-api.service';
 
 @Component({
   selector: 'app-regions-table',
-  imports: [TuiButton, TuiLoader, TuiTitle],
+  imports: [RouterLink, TuiButton, TuiLoader, TuiTitle, TuiAccordion, KeyValuePipe, TuiTable],
   templateUrl: './regions-table.component.html',
   styleUrl: './regions-table.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

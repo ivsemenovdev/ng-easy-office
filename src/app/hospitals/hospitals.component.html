@@ -1,0 +1,124 @@
+<section class="hospitals-section">
+  <header class="hospitals-header">
+    <h1 tuiTitle>Больницы</h1>
+  </header>
+
+  <p class="hospitals-description">
+    Выберите регион, чтобы просмотреть больницы и добавить новые или удалить существующие.
+  </p>
+
+  @if (loadingRegions()) {
+    <tui-loader class="hospitals-loader" />
+  } @else {
+    <label class="hospitals-select-label">
+      <span>Регион</span>
+      <select class="hospitals-select" (change)="onRegionChange($event)">
+        <option value="">— выберите регион —</option>
+        @for (region of regions(); track region.id) {
+          <option [value]="region.id">{{ region.name_ru }}</option>
+        }
+      </select>
+    </label>
+  }
+
+  @if (error(); as message) {
+    <p class="hospitals-error" role="alert">{{ message }}</p>
+  }
+
+  @if (success(); as message) {
+    <p class="hospitals-success" role="status">{{ message }}</p>
+  }
+
+  @if (selectedRegionId()) {
+    @if (loadingHospitals()) {
+      <tui-loader class="hospitals-loader" />
+    } @else {
+      <div class="hospitals-add">
+        <h2 class="hospitals-subtitle">Добавить больницу</h2>
+        <div class="hospitals-add-form">
+          <label class="hospitals-field">
+            <span>Название</span>
+            <input
+              class="hospitals-input"
+              type="text"
+              [(ngModel)]="newName"
+              name="hospitalName"
+              placeholder="ГБУЗ «Городская больница № 1»"
+            />
+          </label>
+          <label class="hospitals-field">
+            <span>Адрес</span>
+            <input
+              class="hospitals-input"
+              type="text"
+              [(ngModel)]="newAddress"
+              name="hospitalAddress"
+              placeholder="Необязательно"
+            />
+          </label>
+          @if (saving()) {
+            <tui-loader class="hospitals-loader-inline" />
+          } @else {
+            <button
+              tuiButton
+              type="button"
+              appearance="primary"
+              size="m"
+              (click)="addHospital()"
+            >
+              Добавить
+            </button>
+          }
+        </div>
+      </div>
+
+      <h2 class="hospitals-subtitle">
+        Больницы региона
+        <span class="hospitals-count">({{ hospitals().length }})</span>
+      </h2>
+
+      @if (hospitals().length === 0) {
+        <p class="hospitals-empty">В этом регионе больниц пока нет</p>
+      } @else {
+        <div class="hospitals-table-wrap">
+          <table class="hospitals-table">
+            <thead>
+              <tr>
+                <th scope="col">Название</th>
+                <th scope="col">Адрес</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (hospital of hospitals(); track hospital.id) {
+                <tr>
+                  <td>{{ hospital.name }}</td>
+                  <td>{{ displayAddress(hospital.address) }}</td>
+                  <td class="hospitals-actions">
+                    @if (deletingId() === hospital.id) {
+                      <tui-loader size="s" />
+                    } @else {
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
+                        (click)="deleteHospital(hospital)"
+                      >
+                        Удалить
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  }
+
+  <p class="hospitals-nav">
+    <a routerLink="/">← К списку регионов</a>
+  </p>
+</section>

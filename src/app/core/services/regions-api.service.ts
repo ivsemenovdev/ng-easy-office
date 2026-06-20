@@ -9,6 +9,12 @@ export class RegionsApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/regions';
 
+  downloadDocx(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/export`, {
+      responseType: 'blob',
+    });
+  }
+
   listRussia(limit = 500): Observable<GeoRegionListResponse> {
     const params = new HttpParams()
       .set('country_iso', 'RU')

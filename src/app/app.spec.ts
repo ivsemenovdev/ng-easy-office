@@ -2,9 +2,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTaiga } from '@taiga-ui/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { App } from './app';
+import { routes } from './app.routes';
 import { RegionsApiService } from './core/services/regions-api.service';
 
 function mockMatchMedia(): void {
@@ -29,6 +31,7 @@ describe('App', () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
+        provideRouter(routes),
         provideTaiga(),
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -55,6 +58,7 @@ describe('App', () => {
 
   it('should render regions table heading', async () => {
     const fixture = TestBed.createComponent(App);
+    await TestBed.inject(Router).navigateByUrl('/');
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;

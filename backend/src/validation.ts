@@ -76,3 +76,45 @@ export const regionListQuerySchema = z.object({
 export const idParamSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
+
+export const hospitalCreateSchema = z.object({
+  region_id: z.number().int().positive(),
+  name: z.string().min(1),
+  address: z.string().nullable().optional(),
+  is_active: z.boolean().optional().default(true),
+});
+
+export const hospitalUpdateSchema = hospitalCreateSchema.partial();
+
+export const hospitalListQuerySchema = z.object({
+  ...pagination,
+  region_id: z.coerce.number().int().positive().optional(),
+  is_active: z
+    .enum(['true', 'false'])
+    .transform((v) => v === 'true')
+    .optional(),
+});
+
+const nullableString = z.string().nullable().optional();
+
+export const diagnosticActCreateSchema = z.object({
+  hospital_id: z.number().int().positive(),
+  act_number: nullableString,
+  act_date: nullableString,
+  act_title: nullableString,
+  equipment_name: nullableString,
+  equipment_model: nullableString,
+  serial_number: nullableString,
+  customer: nullableString,
+  customer_address: nullableString,
+  work_type: nullableString,
+  basis: nullableString,
+  equipment_condition: z.array(z.string()).optional().default([]),
+  completed_works: z.array(z.string()).optional().default([]),
+  conclusion: z.array(z.string()).optional().default([]),
+});
+
+export const diagnosticActListQuerySchema = z.object({
+  ...pagination,
+  hospital_id: z.coerce.number().int().positive(),
+});

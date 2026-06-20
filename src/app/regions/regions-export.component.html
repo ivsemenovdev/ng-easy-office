@@ -1,0 +1,32 @@
+<section class="export-section">
+  <header class="export-header">
+    <h1 tuiTitle>Экспорт регионов в Word</h1>
+  </header>
+
+  <p class="export-description">
+    Скачивается документ Word (.docx) со всеми субъектами Российской Федерации из базы
+    данных.
+  </p>
+
+  @if (downloading()) {
+    <tui-loader class="export-loader" />
+  } @else {
+    <button
+      tuiButton
+      type="button"
+      appearance="primary"
+      size="m"
+      (click)="download()"
+    >
+      Скачать .docx
+    </button>
+  }
+
+  @if (error(); as message) {
+    <p class="export-error" role="alert">{{ message }}</p>
+  }
+
+  <p class="export-nav">
+    <a routerLink="/">← К списку регионов</a>
+  </p>
+</section>

@@ -32,3 +32,33 @@ export interface ListResult<T> {
   limit: number;
   offset: number;
 }
+
+export interface Hospital {
+  id: number;
+  region_id: number;
+  name: string;
+  address: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DiagnosticAct {
+  id: number;
+  hospital_id: number;
+  act_number: string | null;
+  act_date: string | null;
+  act_title: string | null;
+  equipment_name: string | null;
+  equipment_model: string | null;
+  serial_number: string | null;
+  customer: string | null;
+  customer_address: string | null;
+  work_type: string | null;
+  basis: string | null;
+  equipment_condition: string[];
+  completed_works: string[];
+  conclusion: string[];
+  created_at: string;
+  updated_at: string;
+}

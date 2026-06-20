@@ -6,12 +6,17 @@
         <span class="regions-count">({{ total() }})</span>
       }
     </h1>
-    <button tuiButton type="button" appearance="secondary" size="s" (click)="load()">
-      Обновить
-    </button>
+    <div class="regions-actions">
+      <a routerLink="/regions-export" tuiButton appearance="primary" size="s">
+        Экспорт Word
+      </a>
+      <button tuiButton type="button" appearance="secondary" size="s" (click)="load()">
+        Обновить
+      </button>
+    </div>
   </header>
 
-  @if (loading()) {
+  <!-- @if (loading()) {
     <tui-loader class="regions-loader" />
   } @else if (error(); as message) {
     <p class="regions-error" role="alert">{{ message }}</p>
@@ -42,5 +47,40 @@
         </tbody>
       </table>
     </div>
+  } -->
+
+  @if (loading()) {
+    <tui-loader class="regions-loader" />
+  } @else if (error(); as message) {
+    <p class="regions-error" role="alert">{{ message }}</p>
+  } @else {
+    <!-- <div class="regions-table-wrap"> -->
+      <table tuiTable>
+        <thead>
+          <tr>
+            <th tuiTh>№</th>
+            <th tuiTh>Код</th>
+            <th tuiTh>Наименование</th>
+            <th tuiTh>Кратко</th>
+            <th tuiTh>Тип</th>
+            <th tuiTh>Активен</th>
+          </tr>
+        </thead>
+        <tbody tuiTbody>
+          @for (row of regions(); track row.id) {
+            <tr>
+              <td tuiTd>{{ row.sort_order ?? '—' }}</td>
+              <td tuiTd><code>{{ row.code }}</code></td>
+              <td tuiTd>{{ row.name_ru }}</td>
+              <td tuiTd>{{ row.name_short_ru ?? '—' }}</td>
+              <td tuiTd>{{ row.region_type ?? '—' }}</td>
+              <td tuiTd>{{ activeLabel(row.is_active) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    <!-- </div> -->
   }
+  
+
 </section>

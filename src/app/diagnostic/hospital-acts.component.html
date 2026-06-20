@@ -1,0 +1,144 @@
+<section class="acts-section">
+  <header class="acts-header">
+    <h1 tuiTitle>Акты больниц</h1>
+  </header>
+
+  <p class="acts-description">
+    Выберите регион и больницу, чтобы просмотреть сохранённые акты диагностики.
+  </p>
+
+  @if (loadingRegions()) {
+    <tui-loader class="acts-loader" />
+  } @else {
+    <div class="acts-filters">
+      <label class="acts-select-label">
+        <span>Регион</span>
+        <select class="acts-select" (change)="onRegionChange($event)">
+          <option value="">— выберите регион —</option>
+          @for (region of regions(); track region.id) {
+            <option [value]="region.id">{{ region.name_ru }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="acts-select-label">
+        <span>Больница</span>
+        <select
+          class="acts-select"
+          [disabled]="!selectedRegionId()"
+          (change)="onHospitalChange($event)"
+        >
+          <option value="">— выберите больницу —</option>
+          @for (hospital of hospitals(); track hospital.id) {
+            <option [value]="hospital.id">{{ hospital.name }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  }
+
+  @if (error(); as message) {
+    <p class="acts-error" role="alert">{{ message }}</p>
+  }
+
+  @if (selectedHospitalId()) {
+    @if (loadingActs()) {
+      <tui-loader class="acts-loader" />
+    } @else if (acts().length === 0) {
+      <p class="acts-empty">Актов пока нет</p>
+    } @else {
+      <p class="acts-count">Найдено актов: {{ total() }}</p>
+      <div class="acts-table-wrap">
+        <table class="acts-table">
+          <thead>
+            <tr>
+              <th scope="col">№ акта</th>
+              <th scope="col">Дата акта</th>
+              <th scope="col">Оборудование</th>
+              <th scope="col">Тип работ</th>
+              <th scope="col">Загружен</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (act of acts(); track act.id) {
+              <tr
+                class="acts-row"
+                [class.acts-row-expanded]="expandedActId() === act.id"
+                (click)="toggleAct(act.id)"
+              >
+                <td>{{ display(act.act_number) }}</td>
+                <td>{{ display(act.act_date) }}</td>
+                <td>{{ display(act.equipment_name) }}</td>
+                <td>{{ display(act.work_type) }}</td>
+                <td>{{ formatDateTime(act.created_at) }}</td>
+              </tr>
+              @if (expandedActId() === act.id) {
+                <tr class="acts-detail-row">
+                  <td colspan="5">
+                    <dl class="acts-detail">
+                      <div class="acts-detail-field">
+                        <dt>Тип акта</dt>
+                        <dd>{{ display(act.act_title) }}</dd>
+                      </div>
+                      <div class="acts-detail-field">
+                        <dt>Модель</dt>
+                        <dd>{{ display(act.equipment_model) }}</dd>
+                      </div>
+                      <div class="acts-detail-field">
+                        <dt>Заводской номер</dt>
+                        <dd>{{ display(act.serial_number) }}</dd>
+                      </div>
+                      <div class="acts-detail-field">
+                        <dt>Заказчик</dt>
+                        <dd>{{ display(act.customer) }}</dd>
+                      </div>
+                      <div class="acts-detail-field">
+                        <dt>Адрес заказчика</dt>
+                        <dd>{{ display(act.customer_address) }}</dd>
+                      </div>
+                      <div class="acts-detail-field">
+                        <dt>Основание</dt>
+                        <dd>{{ display(act.basis) }}</dd>
+                      </div>
+                    </dl>
+
+                    @if (act.equipment_condition.length > 0) {
+                      <h3 class="acts-detail-title">Состояние и дефекты</h3>
+                      <ul class="acts-detail-list">
+                        @for (item of act.equipment_condition; track $index) {
+                          <li>{{ item }}</li>
+                        }
+                      </ul>
+                    }
+
+                    @if (act.completed_works.length > 0) {
+                      <h3 class="acts-detail-title">Выполненные работы</h3>
+                      <ul class="acts-detail-list">
+                        @for (item of act.completed_works; track $index) {
+                          <li>{{ item }}</li>
+                        }
+                      </ul>
+                    }
+
+                    @if (act.conclusion.length > 0) {
+                      <h3 class="acts-detail-title">Заключение</h3>
+                      <ul class="acts-detail-list">
+                        @for (item of act.conclusion; track $index) {
+                          <li>{{ item }}</li>
+                        }
+                      </ul>
+                    }
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <p class="acts-nav">
+    <a routerLink="/diagnostic-import">← К импорту акта</a>
+  </p>
+</section>

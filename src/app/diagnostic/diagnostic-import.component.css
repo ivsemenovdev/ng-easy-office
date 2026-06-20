@@ -1,0 +1,148 @@
+.import-section {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.import-header {
+  margin-bottom: 1rem;
+}
+
+.import-description {
+  margin: 0 0 1.25rem;
+  color: var(--tui-text-secondary);
+  line-height: 1.5;
+}
+
+.import-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.import-file-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.import-file-text {
+  font-size: 0.875rem;
+  color: var(--tui-text-secondary);
+}
+
+.import-file-input {
+  font: inherit;
+}
+
+.import-loader {
+  margin: 0.5rem 0;
+}
+
+.import-error {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-status-negative-pale);
+  color: var(--tui-text-negative);
+}
+
+.import-result {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--tui-border-normal);
+}
+
+.import-result-title {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.import-fields {
+  margin: 0 0 1.5rem;
+}
+
+.import-field {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) 1fr;
+  gap: 0.75rem 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--tui-border-normal);
+}
+
+.import-field dt {
+  margin: 0;
+  color: var(--tui-text-secondary);
+}
+
+.import-field dd {
+  margin: 0;
+}
+
+.import-list {
+  margin: 0 0 1.5rem;
+  padding-left: 1.25rem;
+}
+
+.import-list li + li {
+  margin-top: 0.35rem;
+}
+
+.import-empty {
+  margin: 0 0 1.5rem;
+  color: var(--tui-text-secondary);
+}
+
+.import-save {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--tui-border-normal);
+}
+
+.import-select-row {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 40rem) {
+  .import-select-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.import-select-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--tui-text-secondary);
+}
+
+.import-select {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+}
+
+.import-success {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-status-positive-pale);
+  color: var(--tui-text-positive);
+}
+
+.import-nav {
+  margin-top: 2rem;
+}
+
+.import-nav a {
+  color: var(--tui-text-action);
+  text-decoration: none;
+}
+
+.import-nav a:hover {
+  text-decoration: underline;
+}

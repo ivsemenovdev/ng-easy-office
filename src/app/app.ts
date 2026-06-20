@@ -2,11 +2,11 @@ import { TuiRoot } from '@taiga-ui/core';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { RegionsTableComponent } from './regions/regions-table.component';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TuiRoot, RegionsTableComponent],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, TuiRoot],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

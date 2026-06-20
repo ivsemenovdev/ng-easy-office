@@ -90,7 +90,39 @@ npm run dev
 
 **Query для списка:** `limit`, `offset`, `country_id`, `country_iso` (например `RU`), `parent_id`, `level`, `is_active`.
 
-**Тело POST (пример):**
+### Импорт и акты диагностики
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| `POST` | `/diagnostic/parse` | Парсинг `.docx` (multipart, поле `file`) |
+| `POST` | `/diagnostic/acts` | Сохранение акта |
+| `GET` | `/diagnostic/acts` | Список (`hospital_id`, `limit`, `offset`) |
+| `GET` | `/diagnostic/acts/:id` | Один акт |
+
+Спецификация: [diagnostic-import.md](./diagnostic-import.md), схема БД: [database-hospitals-acts.md](./database-hospitals-acts.md).
+
+### Больницы (`hospitals`)
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| `GET` | `/hospitals` | Список (`region_id`, `is_active`, `limit`, `offset`) |
+| `GET` | `/hospitals/:id` | Одна больница |
+| `POST` | `/hospitals` | Создание |
+| `PUT` / `PATCH` | `/hospitals/:id` | Обновление |
+| `DELETE` | `/hospitals/:id` | Удаление |
+
+**Тело POST `/hospitals` (пример):**
+
+```json
+{
+  "region_id": 1,
+  "name": "ГБУЗ «Городская больница № 1»",
+  "address": "ул. Примерная, 1",
+  "is_active": true
+}
+```
+
+**Тело POST для `/regions` (пример):**
 
 ```json
 {
@@ -113,6 +145,9 @@ npm run dev
 | HTTP | code | Когда |
 |------|------|--------|
 | 400 | `VALIDATION_ERROR` | Zod-валидация |
+| 400 | `FILE_REQUIRED` | Файл не загружен (diagnostic parse) |
+| 400 | `INVALID_DOCX` | Некорректный DOCX |
+| 400 | `INVALID_ACT_TEMPLATE` | Документ не соответствует шаблону акта |
 | 404 | `NOT_FOUND` | Нет записи |
 | 409 | `CONFLICT` | Уникальный ключ (`iso_alpha2`, `country_id`+`code`) |
 | 409 | `FK_VIOLATION` | Ссылка на несуществующую страну / дочерние регионы при DELETE |
@@ -150,3 +185,5 @@ npm run dev
 |------|--------|-----------|
 | 2026-06-01 | 0.1 | Базовый CRUD: countries, regions, health |
 | 2026-06-01 | 0.2 | Таблица регионов на главной (Angular) |
+| 2026-06-20 | 0.3 | POST `/api/diagnostic/parse` — парсинг акта диагностики из DOCX |
+| 2026-06-20 | 0.4 | CRUD `/api/hospitals`, POST/GET `/api/diagnostic/acts` |

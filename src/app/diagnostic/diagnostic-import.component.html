@@ -1,0 +1,124 @@
+<section class="import-section">
+  <header class="import-header">
+    <h1 tuiTitle>Импорт акта диагностики</h1>
+  </header>
+
+  <p class="import-description">
+    Загрузите документ Word (.docx) — акт технического обслуживания / ремонта по
+    шаблону ВНИИИМТ. Данные будут извлечены и показаны на странице.
+  </p>
+
+  <div class="import-controls">
+    <label class="import-file-label">
+      <span class="import-file-text">Файл .docx</span>
+      <input
+        class="import-file-input"
+        type="file"
+        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        (change)="onFileSelected($event)"
+      />
+    </label>
+
+    @if (uploading()) {
+      <tui-loader class="import-loader" />
+    } @else {
+      <button
+        tuiButton
+        type="button"
+        appearance="primary"
+        size="m"
+        (click)="upload()"
+      >
+        Загрузить и разобрать
+      </button>
+    }
+  </div>
+
+  @if (error(); as message) {
+    <p class="import-error" role="alert">{{ message }}</p>
+  }
+
+  @if (result()) {
+    <div class="import-result">
+      <h2 class="import-result-title">Реквизиты акта</h2>
+      <dl class="import-fields">
+        @for (field of actFields(); track field.label) {
+          <div class="import-field">
+            <dt>{{ field.label }}</dt>
+            <dd>{{ field.value }}</dd>
+          </div>
+        }
+      </dl>
+
+      @for (section of actSections(); track section.label) {
+        <h2 class="import-result-title">{{ section.label }}</h2>
+        @if (section.items.length > 0) {
+          <ul class="import-list">
+            @for (item of section.items; track $index) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+        } @else {
+          <p class="import-empty">—</p>
+        }
+      }
+
+      <div class="import-save">
+        <h2 class="import-result-title">Сохранение в базу данных</h2>
+
+        <div class="import-select-row">
+          <label class="import-select-label">
+            <span>Регион</span>
+            <select class="import-select" (change)="onRegionChange($event)">
+              <option value="">— выберите регион —</option>
+              @for (region of regions(); track region.id) {
+                <option [value]="region.id">{{ region.name_ru }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="import-select-label">
+            <span>Больница</span>
+            <select
+              class="import-select"
+              [disabled]="!selectedRegionId()"
+              (change)="onHospitalChange($event)"
+            >
+              <option value="">— выберите больницу —</option>
+              @for (hospital of hospitals(); track hospital.id) {
+                <option [value]="hospital.id">{{ hospital.name }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        @if (saving()) {
+          <tui-loader class="import-loader" />
+        } @else {
+          <button
+            tuiButton
+            type="button"
+            appearance="secondary"
+            size="m"
+            [disabled]="!selectedHospitalId()"
+            (click)="saveToDb()"
+          >
+            Добавить в БД
+          </button>
+        }
+
+        @if (saveSuccess(); as message) {
+          <p class="import-success" role="status">{{ message }}</p>
+        }
+
+        @if (saveError(); as message) {
+          <p class="import-error" role="alert">{{ message }}</p>
+        }
+      </div>
+    </div>
+  }
+
+  <p class="import-nav">
+    <a routerLink="/">← К списку регионов</a>
+  </p>
+</section>

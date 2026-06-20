@@ -5,6 +5,9 @@ import { pool } from './db/pool.js';
 import { config } from './config.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { countriesRouter } from './routes/countries.routes.js';
+import { diagnosticRouter } from './routes/diagnostic.routes.js';
+import { hospitalsRouter } from './routes/hospitals.routes.js';
+import { regionsExportRouter } from './routes/regions-export.routes.js';
 import { regionsRouter } from './routes/regions.routes.js';
 
 export function createApp() {
@@ -26,6 +29,9 @@ export function createApp() {
   );
 
   app.use('/api/countries', countriesRouter);
+  app.use('/api/hospitals', hospitalsRouter);
+  app.use('/api/diagnostic', diagnosticRouter);
+  app.use('/api/regions/export', regionsExportRouter);
   app.use('/api/regions', regionsRouter);
 
   app.use(errorHandler);

@@ -31,6 +31,8 @@
 | [database-policy.md](./database-policy.md) | Защита схемы: роли, `schema_migrations`, порядок миграций и сидов |
 | [database-regions.md](./database-regions.md) | Схема PostgreSQL: страны и регионы (`geo_countries`, `geo_regions`), DDL, сиды, запросы |
 | [api-backend.md](./api-backend.md) | Node.js API: CRUD `/api/countries`, `/api/regions` |
+| [diagnostic-import.md](./diagnostic-import.md) | Импорт акта диагностики из DOCX |
+| [database-hospitals-acts.md](./database-hospitals-acts.md) | Больницы и акты диагностики в PostgreSQL |
 
 ```bash
 # Миграции (001, 002, …)

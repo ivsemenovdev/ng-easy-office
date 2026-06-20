@@ -1,0 +1,146 @@
+.acts-section {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.acts-header {
+  margin-bottom: 1rem;
+}
+
+.acts-description {
+  margin: 0 0 1.25rem;
+  color: var(--tui-text-secondary);
+  line-height: 1.5;
+}
+
+.acts-filters {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 40rem) {
+  .acts-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.acts-select-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--tui-text-secondary);
+}
+
+.acts-select {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+}
+
+.acts-loader {
+  margin: 1rem 0;
+}
+
+.acts-error {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-status-negative-pale);
+  color: var(--tui-text-negative);
+}
+
+.acts-empty,
+.acts-count {
+  margin: 1rem 0;
+  color: var(--tui-text-secondary);
+}
+
+.acts-table-wrap {
+  overflow-x: auto;
+}
+
+.acts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.acts-table th,
+.acts-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--tui-border-normal);
+}
+
+.acts-table th {
+  font-weight: 600;
+  color: var(--tui-text-secondary);
+}
+
+.acts-row {
+  cursor: pointer;
+}
+
+.acts-row:hover {
+  background: var(--tui-background-neutral-1);
+}
+
+.acts-row-expanded td {
+  border-bottom: none;
+}
+
+.acts-detail-row td {
+  padding-top: 0;
+  background: var(--tui-background-neutral-1);
+}
+
+.acts-detail {
+  display: grid;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1rem;
+}
+
+@media (min-width: 40rem) {
+  .acts-detail {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.acts-detail-field {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.acts-detail-field dt {
+  font-size: 0.8125rem;
+  color: var(--tui-text-secondary);
+}
+
+.acts-detail-field dd {
+  margin: 0;
+}
+
+.acts-detail-title {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.acts-detail-list {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.acts-nav {
+  margin-top: 2rem;
+}
+
+.acts-nav a {
+  color: var(--tui-text-action);
+  text-decoration: none;
+}
+
+.acts-nav a:hover {
+  text-decoration: underline;
+}
