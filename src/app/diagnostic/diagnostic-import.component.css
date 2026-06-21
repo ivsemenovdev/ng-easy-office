@@ -1,5 +1,5 @@
 .import-section {
-  max-width: 48rem;
+  max-width: 56rem;
   margin: 0 auto;
   padding: 1.5rem;
 }
@@ -145,4 +145,85 @@
 
 .import-nav a:hover {
   text-decoration: underline;
+}
+
+.import-batch {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--tui-border-normal);
+}
+
+.import-batch-summary {
+  margin: 0;
+  color: var(--tui-text-secondary);
+  line-height: 1.5;
+}
+
+.import-batch-progress {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--tui-text-secondary);
+}
+
+.import-batch-results {
+  margin-top: 1.25rem;
+}
+
+.import-batch-table-wrap {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-m);
+}
+
+.import-batch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.import-batch-table th,
+.import-batch-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--tui-border-normal);
+  vertical-align: top;
+}
+
+.import-batch-table th {
+  font-weight: 600;
+  color: var(--tui-text-secondary);
+  background: var(--tui-background-neutral-1);
+}
+
+.import-batch-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.import-batch-row-error {
+  background: var(--tui-status-negative-pale);
+}
+
+.import-batch-file-name {
+  display: block;
+}
+
+.import-batch-file-path {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.8125rem;
+  color: var(--tui-text-secondary);
+}
+
+.import-batch-row-message {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--tui-text-negative);
+}
+
+.import-batch-save-title {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
 }

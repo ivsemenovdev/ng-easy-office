@@ -121,16 +121,3 @@
   width: 7rem;
   text-align: right;
 }
-
-.hospitals-nav {
-  margin-top: 2rem;
-}
-
-.hospitals-nav a {
-  color: var(--tui-text-action);
-  text-decoration: none;
-}
-
-.hospitals-nav a:hover {
-  text-decoration: underline;
-}

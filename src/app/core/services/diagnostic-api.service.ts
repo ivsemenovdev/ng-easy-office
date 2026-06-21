@@ -11,17 +11,20 @@ import type {
   DiagnosticActSaveResponse,
 } from '../models/diagnostic-act.model';
 
+/** HTTP-клиент для `/api/diagnostic`: разбор DOCX и сохранение актов. */
 @Injectable({ providedIn: 'root' })
 export class DiagnosticApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/diagnostic';
 
+  /** Разбирает акт диагностики из загруженного `.docx`. */
   parseDocx(file: File): Observable<DiagnosticActParseResponse> {
     const form = new FormData();
     form.append('file', file);
     return this.http.post<DiagnosticActParseResponse>(`${this.baseUrl}/parse`, form);
   }
 
+  /** Сохраняет разобранный акт, привязанный к больнице. */
   saveAct(
     hospitalId: number,
     data: DiagnosticActData,
@@ -46,6 +49,7 @@ export class DiagnosticApiService {
     return this.http.post<DiagnosticActSaveResponse>(`${this.baseUrl}/acts`, body);
   }
 
+  /** Список актов выбранной больницы. */
   listActs(hospitalId: number, limit = 500): Observable<DiagnosticActListResponse> {
     const params = new HttpParams()
       .set('hospital_id', hospitalId)

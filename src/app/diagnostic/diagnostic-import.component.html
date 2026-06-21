@@ -118,6 +118,149 @@
     </div>
   }
 
+  <div class="import-batch">
+    <h2 class="import-result-title">Групповая загрузка из папки</h2>
+    <p class="import-description">
+      Выберите папку — будут обработаны все файлы <code>.docx</code> в ней и во
+      вложенных подпапках. Каждый акт сохраняется в выбранную больницу.
+    </p>
+
+    <div class="import-controls">
+      <label class="import-file-label">
+        <span class="import-file-text">Папка с актами</span>
+        <input
+          class="import-file-input"
+          type="file"
+          webkitdirectory
+          (change)="onFolderSelected($event)"
+        />
+      </label>
+
+      @if (batchFolderLabel(); as folderName) {
+        <p class="import-batch-summary">
+          Папка: <strong>{{ folderName }}</strong>, файлов .docx:
+          <strong>{{ batchFiles().length }}</strong>
+        </p>
+      }
+
+      @if (batchParsing()) {
+        <tui-loader class="import-loader" />
+        <p class="import-batch-progress">
+          Разбор: {{ batchProgress().done }} / {{ batchProgress().total }}
+        </p>
+      } @else {
+        <button
+          tuiButton
+          type="button"
+          appearance="primary"
+          size="m"
+          [disabled]="batchFiles().length === 0"
+          (click)="parseBatch()"
+        >
+          Разобрать все
+        </button>
+      }
+    </div>
+
+    @if (batchError(); as message) {
+      <p class="import-error" role="alert">{{ message }}</p>
+    }
+
+    @if (batchItems().length > 0) {
+      <div class="import-batch-results">
+        <p class="import-batch-summary">
+          Разобрано: {{ batchParsedCount() }}, сохранено: {{ batchSavedCount() }}
+        </p>
+
+        <div class="import-batch-table-wrap">
+          <table class="import-batch-table">
+            <thead>
+              <tr>
+                <th scope="col">Файл</th>
+                <th scope="col">№ акта</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Оборудование</th>
+                <th scope="col">Статус</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of batchItems(); track item.relativePath) {
+                <tr [class.import-batch-row-error]="item.status === 'error'">
+                  <td>
+                    <span class="import-batch-file-name">{{ item.fileName }}</span>
+                    @if (item.relativePath !== item.fileName) {
+                      <span class="import-batch-file-path">{{ item.relativePath }}</span>
+                    }
+                  </td>
+                  <td>{{ display(item.data?.actNumber ?? null) }}</td>
+                  <td>{{ display(item.data?.actDate ?? null) }}</td>
+                  <td>{{ display(item.data?.equipmentName ?? null) }}</td>
+                  <td>
+                    {{ batchStatusLabel(item) }}
+                    @if (item.error) {
+                      <span class="import-batch-row-message">{{ item.error }}</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (batchParsedCount() > 0 || batchSavedCount() > 0) {
+          <div class="import-save">
+            <h3 class="import-batch-save-title">Сохранение в базу данных</h3>
+
+            <div class="import-select-row">
+              <label class="import-select-label">
+                <span>Регион</span>
+                <select class="import-select" (change)="onBatchRegionChange($event)">
+                  <option value="">— выберите регион —</option>
+                  @for (region of batchRegions(); track region.id) {
+                    <option [value]="region.id">{{ region.name_ru }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="import-select-label">
+                <span>Больница</span>
+                <select
+                  class="import-select"
+                  [disabled]="!batchSelectedRegionId()"
+                  (change)="onBatchHospitalChange($event)"
+                >
+                  <option value="">— выберите больницу —</option>
+                  @for (hospital of batchHospitals(); track hospital.id) {
+                    <option [value]="hospital.id">{{ hospital.name }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            @if (batchSaving()) {
+              <tui-loader class="import-loader" />
+            } @else {
+              <button
+                tuiButton
+                type="button"
+                appearance="secondary"
+                size="m"
+                [disabled]="!batchSelectedHospitalId() || batchParsedCount() === 0"
+                (click)="saveBatchToDb()"
+              >
+                Сохранить все в БД
+              </button>
+            }
+
+            @if (batchSaveMessage(); as message) {
+              <p class="import-success" role="status">{{ message }}</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
   <p class="import-nav">
     <a routerLink="/">← К списку регионов</a>
   </p>

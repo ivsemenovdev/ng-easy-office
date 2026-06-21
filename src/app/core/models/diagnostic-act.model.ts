@@ -1,3 +1,4 @@
+/** Структура акта после разбора DOCX (camelCase, как в ответе parse). */
 export interface DiagnosticActData {
   actNumber: string | null;
   actDate: string | null;
@@ -14,21 +15,38 @@ export interface DiagnosticActData {
   conclusion: string[];
 }
 
+/** Ответ `POST /api/diagnostic/parse`. */
 export interface DiagnosticActParseResponse {
   data: DiagnosticActData;
   warnings?: string[];
 }
 
+/** Строка таблицы реквизитов на экране импорта. */
 export interface DiagnosticFieldRow {
   label: string;
   value: string;
 }
 
+/** Блок списка (дефекты, работы, заключение) на экране импорта. */
 export interface DiagnosticSectionRow {
   label: string;
   items: string[];
 }
 
+/** Элемент групповой загрузки: один файл из выбранной папки. */
+export type DiagnosticBatchItemStatus = 'pending' | 'parsed' | 'error' | 'saved';
+
+export interface DiagnosticBatchItem {
+  fileName: string;
+  relativePath: string;
+  status: DiagnosticBatchItemStatus;
+  data?: DiagnosticActData;
+  error?: string;
+  actId?: number;
+  warnings?: string[];
+}
+
+/** Запись акта в БД (`diagnostic_acts`, snake_case). */
 export interface DiagnosticActRecord {
   id: number;
   hospital_id: number;
@@ -49,6 +67,7 @@ export interface DiagnosticActRecord {
   updated_at: string;
 }
 
+/** Ответ `GET /api/diagnostic/acts`. */
 export interface DiagnosticActListResponse {
   items: DiagnosticActRecord[];
   total: number;
@@ -56,11 +75,13 @@ export interface DiagnosticActListResponse {
   offset: number;
 }
 
+/** Ответ `POST /api/diagnostic/acts`. */
 export interface DiagnosticActSaveResponse {
   act: DiagnosticActRecord;
   warnings: string[];
 }
 
+/** Тело `POST /api/diagnostic/acts`. */
 export interface DiagnosticActCreateRequest {
   hospital_id: number;
   act_number: string | null;

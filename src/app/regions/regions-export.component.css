@@ -23,16 +23,3 @@
   background: var(--tui-status-negative-pale);
   color: var(--tui-text-negative);
 }
-
-.export-nav {
-  margin-top: 2rem;
-}
-
-.export-nav a {
-  color: var(--tui-text-action);
-  text-decoration: none;
-}
-
-.export-nav a:hover {
-  text-decoration: underline;
-}

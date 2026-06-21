@@ -1,3 +1,4 @@
+/** Больница, привязанная к региону (`hospitals`). */
 export interface Hospital {
   id: number;
   region_id: number;
@@ -8,6 +9,7 @@ export interface Hospital {
   updated_at: string;
 }
 
+/** Ответ `GET /api/hospitals`. */
 export interface HospitalListResponse {
   items: Hospital[];
   total: number;
@@ -15,6 +17,7 @@ export interface HospitalListResponse {
   offset: number;
 }
 
+/** Тело `POST /api/hospitals`. */
 export interface HospitalCreateRequest {
   region_id: number;
   name: string;

@@ -1,5 +1,7 @@
+/** Уровень записи в иерархии geo_regions. */
 export type GeoRegionLevel = 'country' | 'federal_subject' | 'administrative';
 
+/** Регион / субъект из таблицы `geo_regions`. */
 export interface GeoRegion {
   id: number;
   country_id: number;
@@ -17,6 +19,7 @@ export interface GeoRegion {
   updated_at: string;
 }
 
+/** Ответ `GET /api/regions` с пагинацией. */
 export interface GeoRegionListResponse {
   items: GeoRegion[];
   total: number;

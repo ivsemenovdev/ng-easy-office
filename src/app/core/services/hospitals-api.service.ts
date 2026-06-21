@@ -8,11 +8,13 @@ import type {
   HospitalListResponse,
 } from '../models/hospital.model';
 
+/** HTTP-клиент для `/api/hospitals`: CRUD больниц по регионам. */
 @Injectable({ providedIn: 'root' })
 export class HospitalsApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/hospitals';
 
+  /** Активные больницы выбранного региона. */
   listByRegion(regionId: number, limit = 500): Observable<HospitalListResponse> {
     const params = new HttpParams()
       .set('region_id', regionId)

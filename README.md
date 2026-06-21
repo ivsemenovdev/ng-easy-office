@@ -4,12 +4,12 @@
 
 ## Стек
 
-| Слой | Технологии |
-|------|------------|
-| UI | [Angular](https://angular.dev/) 21, [Taiga UI](https://taiga-ui.dev/) 5 |
-| API | Node.js 20+, [Express](https://expressjs.com/), TypeScript, `pg` |
-| Тесты (фронт) | [Vitest](https://vitest.dev/) |
-| БД | PostgreSQL 18+ (локально) |
+| Слой          | Технологии                                                              |
+| ------------- | ----------------------------------------------------------------------- |
+| UI            | [Angular](https://angular.dev/) 21, [Taiga UI](https://taiga-ui.dev/) 5 |
+| API           | Node.js 20+, [Express](https://expressjs.com/), TypeScript, `pg`        |
+| Тесты (фронт) | [Vitest](https://vitest.dev/)                                           |
+| БД            | PostgreSQL 18+ (локально)                                               |
 
 ## Требования
 
@@ -47,6 +47,8 @@ curl 'http://localhost:3000/api/regions?country_iso=RU&limit=5'
 
 Спецификация: [docs/ai/api-backend.md](docs/ai/api-backend.md)
 
+**Контекст для AI:** [docs/ai/project-context.md](docs/ai/project-context.md) — архитектура, карта файлов, quick start.
+
 ### 3. Фронтенд
 
 ```bash
@@ -80,11 +82,11 @@ ng-easy-office/
 
 ## API (кратко)
 
-| Ресурс | Базовый путь | CRUD |
-|--------|--------------|------|
-| Health | `GET /api/health` | — |
-| Страны | `/api/countries` | да |
-| Регионы | `/api/regions` | да |
+| Ресурс  | Базовый путь      | CRUD |
+| ------- | ----------------- | ---- |
+| Health  | `GET /api/health` | —    |
+| Страны  | `/api/countries`  | да   |
+| Регионы | `/api/regions`    | да   |
 
 Фильтры списка регионов: `country_iso`, `country_id`, `level`, `is_active`, `limit`, `offset`.
 

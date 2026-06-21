@@ -5,8 +5,6 @@ import {
     signal,
 } from '@angular/core';
 import { TuiLoader } from '@taiga-ui/core';
-import { TuiAccordion } from '@taiga-ui/kit';
-import { TuiTable } from '@taiga-ui/addon-table';
 
 import type { GeoRegion } from '../core/models/geo.model';
 import { RegionsApiService } from '../core/services/regions-api.service';
@@ -14,9 +12,10 @@ import { delay } from 'rxjs';
 import { RegionsTableComponent } from './regions-table.component';
 import { HospitalsComponent } from '../hospitals/hospitals.component';
 
+/** Главная страница: загрузка регионов РФ, таблица и управление больницами. */
 @Component({
     selector: 'app-regions-settings',
-    imports: [TuiLoader, TuiAccordion, TuiTable, RegionsTableComponent, HospitalsComponent],
+    imports: [TuiLoader, RegionsTableComponent, HospitalsComponent],
     templateUrl: './regions-settings.component.html',
     styleUrl: './regions-settings.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,

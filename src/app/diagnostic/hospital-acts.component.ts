@@ -14,6 +14,7 @@ import { DiagnosticApiService } from '../core/services/diagnostic-api.service';
 import { HospitalsApiService } from '../core/services/hospitals-api.service';
 import { RegionsApiService } from '../core/services/regions-api.service';
 
+/** Просмотр сохранённых актов диагностики по региону и больнице. */
 @Component({
   selector: 'app-hospital-acts',
   imports: [RouterLink, TuiLoader, TuiTitle],

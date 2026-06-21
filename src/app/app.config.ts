@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 
+/** Провайдеры Angular: роутер, HTTP, Taiga UI. */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),

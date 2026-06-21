@@ -60,7 +60,8 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await TestBed.inject(Router).navigateByUrl('/');
     fixture.detectChanges();
-    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Субъекты Российской Федерации');
   });

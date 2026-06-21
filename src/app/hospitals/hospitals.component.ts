@@ -12,6 +12,7 @@ import type { Hospital } from '../core/models/hospital.model';
 import { HospitalsApiService } from '../core/services/hospitals-api.service';
 import { RegionsApiService } from '../core/services/regions-api.service';
 
+/** CRUD больниц по выбранному региону. */
 @Component({
   selector: 'app-hospitals',
   imports: [FormsModule, TuiButton, TuiLoader, TuiTitle],

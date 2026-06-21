@@ -4,6 +4,7 @@ import { DiagnosticImportComponent } from './diagnostic/diagnostic-import.compon
 import { HospitalActsComponent } from './diagnostic/hospital-acts.component';
 import { RegionsSettingsComponent } from './regions/regions-settings.component';
 
+/** Маршруты SPA: регионы (главная), импорт и просмотр актов диагностики. */
 export const routes: Routes = [
   { path: '', component: RegionsSettingsComponent },
   { path: 'diagnostic-import', component: DiagnosticImportComponent },

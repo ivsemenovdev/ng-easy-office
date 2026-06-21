@@ -10,6 +10,7 @@ import { hospitalsRouter } from './routes/hospitals.routes.js';
 import { regionsExportRouter } from './routes/regions-export.routes.js';
 import { regionsRouter } from './routes/regions.routes.js';
 
+/** Собирает Express-приложение: CORS, JSON, `/api/*` роуты, обработчик ошибок. */
 export function createApp() {
   const app = express();
 

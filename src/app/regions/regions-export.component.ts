@@ -8,6 +8,7 @@ import { TuiButton, TuiLoader, TuiTitle } from '@taiga-ui/core';
 
 import { RegionsApiService } from '../core/services/regions-api.service';
 
+/** Кнопка скачивания DOCX со списком субъектов РФ. */
 @Component({
   selector: 'app-regions-export',
   imports: [TuiButton, TuiLoader, TuiTitle],
