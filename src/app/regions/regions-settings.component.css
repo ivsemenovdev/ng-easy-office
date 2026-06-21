@@ -1,0 +1,16 @@
+.regions-loader {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 3rem);
+    align-items: center;
+    justify-content: center;
+  }
+  
+.regions-error {
+    margin: 0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--tui-status-negative-pale);
+    color: var(--tui-text-primary);
+  }
+  

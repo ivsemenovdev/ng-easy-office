@@ -1,15 +1,8 @@
 <section class="regions-section">
-  @if (loading()) {
-    <tui-loader class="regions-loader" />
-  } @else if (error(); as message) {
-    <p class="regions-error" role="alert">{{ message }}</p>
-  } @else {
     <tui-accordion>
           <button [tuiAccordion]="false">
             Субъекты Российской Федерации
-            @if (!loading() && !error()) {
-              <span class="regions-count">({{ total() }})</span>
-            }
+            <span class="regions-count">({{ total() }})</span>
           </button>
           <tui-expand>
             <app-regions-export></app-regions-export>  
@@ -39,9 +32,4 @@
             </table>
           </tui-expand>
   </tui-accordion>
-  }
-</section>
-
-<section>
-  <app-hospitals></app-hospitals>
 </section>

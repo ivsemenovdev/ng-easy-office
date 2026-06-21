@@ -5,7 +5,6 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { TuiButton, TuiLoader, TuiTitle } from '@taiga-ui/core';
 
 import type { GeoRegion } from '../core/models/geo.model';
@@ -15,7 +14,7 @@ import { RegionsApiService } from '../core/services/regions-api.service';
 
 @Component({
   selector: 'app-hospitals',
-  imports: [RouterLink, FormsModule, TuiButton, TuiLoader, TuiTitle],
+  imports: [FormsModule, TuiButton, TuiLoader, TuiTitle],
   templateUrl: './hospitals.component.html',
   styleUrl: './hospitals.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -114,7 +113,7 @@ export class HospitalsComponent {
       error: (err) => {
         this.error.set(
           err.error?.error ??
-            'Не удалось удалить больницу. Возможно, к ней привязаны акты.',
+          'Не удалось удалить больницу. Возможно, к ней привязаны акты.',
         );
         this.deletingId.set(null);
       },
