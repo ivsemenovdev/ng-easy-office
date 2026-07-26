@@ -63,8 +63,8 @@ npm start
 
 ```bash
 npm run build          # Angular → dist/ng-easy-office
-cd backend && npm run build && npm test  # tsc, без отдельных тестов backend
-npm test               # Vitest (Angular)
+cd backend && npm run build   # tsc (отдельных тестов backend нет)
+npm test                      # ng test (Vitest через Angular unit-test)
 ```
 
 ---
@@ -252,5 +252,6 @@ DOCX:
 | Дата       | Изменение                                                                              |
 | ---------- | -------------------------------------------------------------------------------------- |
 | 2026-06-21 | Создан `project-context.md`; JSDoc в core-модулях; очистка неиспользуемых импортов/CSS |
+| 2026-07-26 | Синхронизация документации с README и `api-backend.md`; уточнена команда сборки backend |
 
 <!-- Для нового чата достаточно приложить этот файл (или написать: «прочитай docs/ai/project-context.md»). Ссылка добавлена в README.md и docs/ai/README.md. -->

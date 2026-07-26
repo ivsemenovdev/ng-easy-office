@@ -1,8 +1,8 @@
 # Backend API (Node.js)
 
-> **Назначение:** REST CRUD для справочников `geo_countries`, `geo_regions`.  
+> **Назначение:** REST API: география (`geo_*`), больницы, импорт/хранение актов диагностики, экспорт регионов в DOCX.  
 > **Код:** `backend/` · Express + TypeScript + `pg`  
-> **Статус:** v0.1 — базовый CRUD, без аутентификации
+> **Статус:** v0.5 — CRUD + DOCX, без аутентификации
 
 ---
 
@@ -20,7 +20,8 @@ npm run dev
 Перед первым запуском:
 
 ```bash
-./database/scripts/migrate.sh   # включая 003_geo_dml_for_app
+./database/scripts/migrate.sh   # 001–005 (DML для ng_app: 003, 005)
+psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 ```
 
 ---
@@ -90,6 +91,14 @@ npm run dev
 
 **Query для списка:** `limit`, `offset`, `country_id`, `country_iso` (например `RU`), `parent_id`, `level`, `is_active`.
 
+### Экспорт регионов
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| `GET` | `/regions/export` | DOCX со всеми активными субъектами РФ (`Content-Disposition: attachment`) |
+
+Реализация: `docxtemplater`, шаблон `backend/templates/regions-export.docx`. На фронте — `RegionsApiService.downloadDocx()`.
+
 ### Импорт и акты диагностики
 
 | Метод | Путь | Описание |
@@ -157,7 +166,10 @@ npm run dev
 
 ## 5. БД и роли
 
-Миграция `003_geo_dml_for_app.sql` выдаёт роли `ng_app` права `INSERT`/`UPDATE`/`DELETE` на `geo_*` для API.
+| Миграция | Права `ng_app` |
+|----------|----------------|
+| `003_geo_dml_for_app.sql` | `INSERT`/`UPDATE`/`DELETE` на `geo_countries`, `geo_regions` |
+| `005_hospitals_acts_dml_for_app.sql` | `INSERT`/`UPDATE`/`DELETE` на `hospitals`, `diagnostic_acts` |
 
 Локально подключение идёт через `DATABASE_URL` (часто пользователь ОС — владелец БД). Для prod — `postgres://ng_app:***@...`.
 
@@ -173,7 +185,7 @@ npm run dev
 
 ## 7. Фронтенд
 
-Главная страница Angular загружает `GET /api/regions?country_iso=RU` (компонент `src/app/regions/regions-table.component.ts`).
+Главная страница (`RegionsSettingsComponent`) загружает `GET /api/regions?country_iso=RU` и передаёт данные в `regions-table.component.ts`; экспорт DOCX — `regions-export.component.ts`.
 
 В dev `ng serve` проксирует `/api` → `http://localhost:3000` (`proxy.conf.json`).
 
@@ -187,3 +199,4 @@ npm run dev
 | 2026-06-01 | 0.2 | Таблица регионов на главной (Angular) |
 | 2026-06-20 | 0.3 | POST `/api/diagnostic/parse` — парсинг акта диагностики из DOCX |
 | 2026-06-20 | 0.4 | CRUD `/api/hospitals`, POST/GET `/api/diagnostic/acts` |
+| 2026-07-26 | 0.5 | Документирован `GET /api/regions/export`; уточнены миграции и фронтенд |

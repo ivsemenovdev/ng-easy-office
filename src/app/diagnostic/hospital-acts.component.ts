@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TuiLoader, TuiTitle } from '@taiga-ui/core';
 
 import type { DiagnosticActRecord } from '../core/models/diagnostic-act.model';
@@ -17,7 +11,7 @@ import { RegionsApiService } from '../core/services/regions-api.service';
 /** Просмотр сохранённых актов диагностики по региону и больнице. */
 @Component({
   selector: 'app-hospital-acts',
-  imports: [RouterLink, TuiLoader, TuiTitle],
+  imports: [TuiLoader, TuiTitle],
   templateUrl: './hospital-acts.component.html',
   styleUrl: './hospital-acts.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

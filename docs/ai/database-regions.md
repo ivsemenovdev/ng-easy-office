@@ -1,8 +1,8 @@
 # Справочник регионов (PostgreSQL) — спецификация для AI
 
 > **Назначение:** единый источник правды для агентов и разработчиков при проектировании API, миграций, сидов и UI выбора региона.  
-> **Проект:** `ng-easy-office` — фронтенд (Angular 21 + Taiga UI). Бэкенд в репозитории пока отсутствует; БД используется локально.  
-> **Статус схемы:** миграции `001`–`003`; сид регионов — **89** записей; CRUD — [api-backend.md](./api-backend.md).
+> **Проект:** `ng-easy-office` — Angular 21 + Taiga UI (фронт), Node.js REST API (`backend/`), PostgreSQL.  
+> **Статус схемы (география):** миграции `001`–`003`; сид регионов — **89** записей; CRUD — [api-backend.md](./api-backend.md). Больницы/акты — миграции `004`–`005`, [database-hospitals-acts.md](./database-hospitals-acts.md).
 
 ---
 
@@ -33,7 +33,7 @@
 psql -d donetsk_test
 ```
 
-**Для AI:** перед созданием таблиц убедиться, что база существует (`psql -l | grep donetsk_test`). Пароли и роли не документировать в git — только в локальном `.env` (файл в `.gitignore`, если появится бэкенд).
+**Для AI:** перед созданием таблиц убедиться, что база существует (`psql -l | grep donetsk_test`). Пароли и роли не документировать в git — только в локальном `backend/.env` (см. `backend/.env.example`, файл в `.gitignore`).
 
 ---
 
@@ -311,6 +311,7 @@ SELECT * FROM geo_regions WHERE parent_id = $1 AND is_active = TRUE ORDER BY sor
 | 2026-06-01 | 1.2 | Правило: все изменения документировать (ссылка на `docs/ai/README.md`) |
 | 2026-06-01 | 1.3 | Ссылка на `database-policy.md` (роли, журнал миграций) |
 | 2026-06-01 | 1.4 | REST CRUD: `api-backend.md` |
+| 2026-07-26 | 1.5 | Актуализированы шапка и §2: backend в репозитории, ссылка на домен hospitals/acts |
 
 ---
 
