@@ -120,6 +120,34 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 | `PUT` / `PATCH` | `/hospitals/:id` | Обновление |
 | `DELETE` | `/hospitals/:id` | Удаление |
 
+#### Реквизиты больницы (`hospital_requisites`, 1:1)
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| `GET` | `/hospitals/:id/requisites` | Реквизиты; `404`, если запись не создана |
+| `PUT` | `/hospitals/:id/requisites` | Upsert (создание или обновление) |
+
+**Тело PUT `/hospitals/:id/requisites` (пример):**
+
+```json
+{
+  "legal_address": "г. Донецк, ул. Примерная, 1",
+  "postal_address": "283050, г. Донецк, а/я 100",
+  "phone": "+7 (856) 123-45-67",
+  "inn": "9300000000",
+  "kpp": "930001001",
+  "ogrn": "1029300000000",
+  "bank_account": "40102810000000000001",
+  "bik": "044525000",
+  "bank_name": "Отделение N8600",
+  "ktm": null,
+  "okpo": "12345678",
+  "email": "info@example.org"
+}
+```
+
+Все поля необязательны; пустые строки нормализуются в `null`. Формат `inn`/`kpp`/`ogrn`/`bik` проверяется Zod (длина и только цифры).
+
 **Тело POST `/hospitals` (пример):**
 
 ```json
@@ -170,6 +198,7 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 |----------|----------------|
 | `003_geo_dml_for_app.sql` | `INSERT`/`UPDATE`/`DELETE` на `geo_countries`, `geo_regions` |
 | `005_hospitals_acts_dml_for_app.sql` | `INSERT`/`UPDATE`/`DELETE` на `hospitals`, `diagnostic_acts` |
+| `007_hospital_requisites_dml_for_app.sql` | `INSERT`/`UPDATE`/`DELETE` на `hospital_requisites` |
 
 Локально подключение идёт через `DATABASE_URL` (часто пользователь ОС — владелец БД). Для prod — `postgres://ng_app:***@...`.
 
@@ -185,7 +214,7 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 
 ## 7. Фронтенд
 
-Главная страница (`RegionsSettingsComponent`) загружает `GET /api/regions?country_iso=RU` и передаёт данные в `regions-table.component.ts`; экспорт DOCX — `regions-export.component.ts`.
+Главная страница (`RegionsSettingsComponent`) загружает `GET /api/regions?country_iso=RU` и передаёт данные в `regions-table.component.ts`; экспорт DOCX — `regions-export.component.ts`. Блок `HospitalsComponent` — CRUD больниц и редактирование реквизитов (`GET`/`PUT /api/hospitals/:id/requisites`).
 
 В dev `ng serve` проксирует `/api` → `http://localhost:3000` (`proxy.conf.json`).
 
@@ -200,3 +229,4 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 | 2026-06-20 | 0.3 | POST `/api/diagnostic/parse` — парсинг акта диагностики из DOCX |
 | 2026-06-20 | 0.4 | CRUD `/api/hospitals`, POST/GET `/api/diagnostic/acts` |
 | 2026-07-26 | 0.5 | Документирован `GET /api/regions/export`; уточнены миграции и фронтенд |
+| 2026-07-26 | 0.6 | GET/PUT `/api/hospitals/:id/requisites`; UI редактирования в `HospitalsComponent` |

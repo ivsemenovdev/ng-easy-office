@@ -43,6 +43,25 @@ export interface Hospital {
   updated_at: string;
 }
 
+export interface HospitalRequisites {
+  id: number;
+  hospital_id: number;
+  legal_address: string | null;
+  postal_address: string | null;
+  phone: string | null;
+  inn: string | null;
+  kpp: string | null;
+  ogrn: string | null;
+  bank_account: string | null;
+  bik: string | null;
+  bank_name: string | null;
+  ktm: string | null;
+  okpo: string | null;
+  email: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface DiagnosticAct {
   id: number;
   hospital_id: number;

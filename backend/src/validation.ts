@@ -97,6 +97,44 @@ export const hospitalListQuerySchema = z.object({
 
 const nullableString = z.string().nullable().optional();
 
+const emptyToNull = (value: string | null | undefined) => {
+  if (value === undefined) {
+    return undefined;
+  }
+  const trimmed = value?.trim() ?? '';
+  return trimmed === '' ? null : trimmed;
+};
+
+const optionalRequisiteString = z
+  .string()
+  .nullable()
+  .optional()
+  .transform(emptyToNull);
+
+const optionalDigits = (lengths: number[]) =>
+  optionalRequisiteString.refine(
+    (value) => value === undefined || value === null || lengths.includes(value.length),
+    { message: `Must be ${lengths.join(' or ')} digits` },
+  ).refine(
+    (value) => value === undefined || value === null || /^\d+$/.test(value),
+    { message: 'Must contain digits only' },
+  );
+
+export const hospitalRequisitesUpsertSchema = z.object({
+  legal_address: optionalRequisiteString,
+  postal_address: optionalRequisiteString,
+  phone: optionalRequisiteString,
+  inn: optionalDigits([10, 12]),
+  kpp: optionalDigits([9]),
+  ogrn: optionalDigits([13, 15]),
+  bank_account: optionalRequisiteString,
+  bik: optionalDigits([9]),
+  bank_name: optionalRequisiteString,
+  ktm: optionalRequisiteString,
+  okpo: optionalRequisiteString,
+  email: optionalRequisiteString,
+});
+
 export const diagnosticActCreateSchema = z.object({
   hospital_id: z.number().int().positive(),
   act_number: nullableString,

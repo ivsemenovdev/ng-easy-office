@@ -4,8 +4,8 @@
   </header>
 
   <p class="import-description">
-    Загрузите документ Word (.docx) — акт технического обслуживания / ремонта по
-    шаблону ВНИИИМТ. Данные будут извлечены и показаны на странице.
+    Загрузите документ Word (.docx) — акт технического обслуживания / ремонта по шаблону ВНИИИМТ.
+    Данные будут извлечены и показаны на странице.
   </p>
 
   <div class="import-controls">
@@ -22,13 +22,7 @@
     @if (uploading()) {
       <tui-loader class="import-loader" />
     } @else {
-      <button
-        tuiButton
-        type="button"
-        appearance="primary"
-        size="m"
-        (click)="upload()"
-      >
+      <button tuiButton type="button" appearance="primary" size="m" (click)="upload()">
         Загрузить и разобрать
       </button>
     }
@@ -72,7 +66,9 @@
             <select class="import-select" (change)="onRegionChange($event)">
               <option value="">— выберите регион —</option>
               @for (region of regions(); track region.id) {
-                <option [value]="region.id">{{ region.name_ru }}</option>
+                @if (region.is_active) {
+                  <option [value]="region.id">{{ region.name_ru }}</option>
+                }
               }
             </select>
           </label>
@@ -121,8 +117,8 @@
   <div class="import-batch">
     <h2 class="import-result-title">Групповая загрузка из папки</h2>
     <p class="import-description">
-      Выберите папку — будут обработаны все файлы <code>.docx</code> в ней и во
-      вложенных подпапках. Каждый акт сохраняется в выбранную больницу.
+      Выберите папку — будут обработаны все файлы <code>.docx</code> в ней и во вложенных подпапках.
+      Каждый акт сохраняется в выбранную больницу.
     </p>
 
     <div class="import-controls">
@@ -138,7 +134,8 @@
 
       @if (batchFolderLabel(); as folderName) {
         <p class="import-batch-summary">
-          Папка: <strong>{{ folderName }}</strong>, файлов .docx:
+          Папка: <strong>{{ folderName }}</strong
+          >, файлов .docx:
           <strong>{{ batchFiles().length }}</strong>
         </p>
       }

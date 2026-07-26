@@ -118,6 +118,74 @@
 }
 
 .hospitals-actions {
-  width: 7rem;
+  width: 14rem;
   text-align: right;
+  white-space: nowrap;
+}
+
+.hospitals-actions button + button {
+  margin-left: 0.35rem;
+}
+
+.hospitals-requisites-row td {
+  background: var(--tui-background-neutral-1);
+  padding: 1rem 0.75rem;
+}
+
+.hospitals-requisites {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hospitals-requisites-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.hospitals-requisites-group {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-m);
+}
+
+.hospitals-requisites-group legend {
+  padding: 0 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tui-text-secondary);
+}
+
+.hospitals-requisites-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 40rem) {
+  .hospitals-requisites-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hospitals-requisites-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hospitals-field-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.hospitals-textarea {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  resize: vertical;
+  min-height: 3rem;
+}
+
+.hospitals-requisites-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }

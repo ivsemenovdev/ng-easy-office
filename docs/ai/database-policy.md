@@ -2,7 +2,7 @@
 
 > **Назначение:** защита структуры БД в разработке — схема меняется только осознанно, через версионированные миграции.  
 > **Проект:** ng-easy-office · база по умолчанию: `donetsk_test`  
-> **Статус:** миграции `001`–`005` — см. `schema_migrations`
+> **Статус:** миграции `001`–`007` — см. `schema_migrations`
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-----------------|
 | Структура не меняется «случайно» | DDL только ролью `ng_migrator`, только файлы в `database/migrations/` |
 | Одинаковая схема у всех | Журнал `schema_migrations` + скрипт `database/scripts/migrate.sh` |
-| Справочники и данные через API | `ng_app` — DML на `geo_*` (`003`), `hospitals` / `diagnostic_acts` (`005`; см. [api-backend.md](./api-backend.md)) |
+| Справочники и данные через API | `ng_app` — DML на `geo_*` (`003`), `hospitals` / `diagnostic_acts` (`005`), `hospital_requisites` (`007`; см. [api-backend.md](./api-backend.md)) |
 | Изменения прозрачны | Документация в `docs/ai/` + история в конце каждого документа |
 
 ---
@@ -22,7 +22,7 @@
 | Роль | Кто использует | Права |
 |------|----------------|--------|
 | `ng_migrator` | Разработчик при миграциях/сидах, CI deploy | `CREATE`/`ALTER`/`DROP`, полный доступ к таблицам и `schema_migrations` |
-| `ng_app` | [Backend API](./api-backend.md) | `SELECT`/`INSERT`/`UPDATE`/`DELETE` на `geo_*`, `hospitals`, `diagnostic_acts`; **без DDL** |
+| `ng_app` | [Backend API](./api-backend.md) | `SELECT`/`INSERT`/`UPDATE`/`DELETE` на `geo_*`, `hospitals`, `diagnostic_acts`, `hospital_requisites`; **без DDL** |
 
 Роли создаются в `002_schema_migrations_and_roles.sql` как `NOINHERIT` без пароля.
 
@@ -115,6 +115,8 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 | `docs/ai/database-regions.md` | Домен «регионы» |
 | `database/migrations/004_hospitals_and_diagnostic_acts.sql` | DDL больниц и актов |
 | `database/migrations/005_hospitals_acts_dml_for_app.sql` | DML для `ng_app` |
+| `database/migrations/006_hospital_requisites.sql` | DDL реквизитов больниц |
+| `database/migrations/007_hospital_requisites_dml_for_app.sql` | DML для `ng_app` |
 | `docs/ai/database-hospitals-acts.md` | Домен «больницы / акты» |
 
 ---
@@ -126,3 +128,4 @@ psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 | 2026-06-01 | 1.0 | Политика БД: `schema_migrations`, роли `ng_migrator` / `ng_app`, `migrate.sh` |
 | 2026-06-01 | 1.1 | `003_geo_dml_for_app` — DML на `geo_*` для backend |
 | 2026-06-20 | 1.2 | `004`/`005` — таблицы hospitals/diagnostic_acts и DML для `ng_app` |
+| 2026-07-26 | 1.3 | `006`/`007` — таблица hospital_requisites (1:1) и DML для `ng_app` |

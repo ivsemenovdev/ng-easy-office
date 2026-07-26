@@ -88,7 +88,7 @@
               <tr>
                 <th scope="col">Название</th>
                 <th scope="col">Адрес</th>
-                <th scope="col"></th>
+                <th scope="col">Действия</th>
               </tr>
             </thead>
             <tbody>
@@ -105,6 +105,15 @@
                         type="button"
                         appearance="secondary"
                         size="s"
+                        (click)="toggleRequisites(hospital)"
+                      >
+                        {{ isExpanded(hospital.id) ? 'Скрыть' : 'Реквизиты' }}
+                      </button>
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
                         (click)="deleteHospital(hospital)"
                       >
                         Удалить
@@ -112,6 +121,176 @@
                     }
                   </td>
                 </tr>
+                @if (isExpanded(hospital.id)) {
+                  <tr class="hospitals-requisites-row">
+                    <td colspan="3">
+                      @if (loadingRequisitesId() === hospital.id) {
+                        <tui-loader class="hospitals-loader" />
+                      } @else {
+                        <div class="hospitals-requisites">
+                          <h3 class="hospitals-requisites-title">Реквизиты организации</h3>
+
+                          <fieldset class="hospitals-requisites-group">
+                            <legend>Адреса</legend>
+                            <div class="hospitals-requisites-grid">
+                              <label class="hospitals-field">
+                                <span>Юридический адрес</span>
+                                <textarea
+                                  class="hospitals-textarea"
+                                  rows="2"
+                                  [(ngModel)]="requisitesForm.legal_address"
+                                  [name]="'legalAddress' + hospital.id"
+                                ></textarea>
+                              </label>
+                              <label class="hospitals-field">
+                                <span>Почтовый адрес</span>
+                                <textarea
+                                  class="hospitals-textarea"
+                                  rows="2"
+                                  [(ngModel)]="requisitesForm.postal_address"
+                                  [name]="'postalAddress' + hospital.id"
+                                ></textarea>
+                              </label>
+                            </div>
+                          </fieldset>
+
+                          <fieldset class="hospitals-requisites-group">
+                            <legend>Контакты</legend>
+                            <div class="hospitals-requisites-grid">
+                              <label class="hospitals-field">
+                                <span>Телефон</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.phone"
+                                  [name]="'phone' + hospital.id"
+                                />
+                              </label>
+                              <label class="hospitals-field">
+                                <span>Email</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="email"
+                                  [(ngModel)]="requisitesForm.email"
+                                  [name]="'email' + hospital.id"
+                                />
+                              </label>
+                            </div>
+                          </fieldset>
+
+                          <fieldset class="hospitals-requisites-group">
+                            <legend>Регистрация</legend>
+                            <div class="hospitals-requisites-grid hospitals-requisites-grid-3">
+                              <label class="hospitals-field">
+                                <span>ИНН</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.inn"
+                                  [name]="'inn' + hospital.id"
+                                />
+                              </label>
+                              <label class="hospitals-field">
+                                <span>КПП</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.kpp"
+                                  [name]="'kpp' + hospital.id"
+                                />
+                              </label>
+                              <label class="hospitals-field">
+                                <span>ОГРН</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.ogrn"
+                                  [name]="'ogrn' + hospital.id"
+                                />
+                              </label>
+                              <label class="hospitals-field">
+                                <span>ОКПО</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.okpo"
+                                  [name]="'okpo' + hospital.id"
+                                />
+                              </label>
+                              <label class="hospitals-field">
+                                <span>КТМ</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.ktm"
+                                  [name]="'ktm' + hospital.id"
+                                />
+                              </label>
+                            </div>
+                          </fieldset>
+
+                          <fieldset class="hospitals-requisites-group">
+                            <legend>Банк</legend>
+                            <div class="hospitals-requisites-grid hospitals-requisites-grid-3">
+                              <label class="hospitals-field">
+                                <span>Казначейский / расчётный счёт</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.bank_account"
+                                  [name]="'bankAccount' + hospital.id"
+                                />
+                              </label>
+                              <label class="hospitals-field">
+                                <span>БИК</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.bik"
+                                  [name]="'bik' + hospital.id"
+                                />
+                              </label>
+                              <label class="hospitals-field hospitals-field-wide">
+                                <span>Наименование отделения банка</span>
+                                <input
+                                  class="hospitals-input"
+                                  type="text"
+                                  [(ngModel)]="requisitesForm.bank_name"
+                                  [name]="'bankName' + hospital.id"
+                                />
+                              </label>
+                            </div>
+                          </fieldset>
+
+                          <div class="hospitals-requisites-actions">
+                            @if (savingRequisitesId() === hospital.id) {
+                              <tui-loader class="hospitals-loader-inline" />
+                            } @else {
+                              <button
+                                tuiButton
+                                type="button"
+                                appearance="primary"
+                                size="m"
+                                (click)="saveRequisites(hospital)"
+                              >
+                                Сохранить
+                              </button>
+                              <button
+                                tuiButton
+                                type="button"
+                                appearance="secondary"
+                                size="m"
+                                (click)="cancelRequisites()"
+                              >
+                                Отмена
+                              </button>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </td>
+                  </tr>
+                }
               }
             </tbody>
           </table>

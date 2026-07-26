@@ -16,7 +16,9 @@
         <select class="acts-select" (change)="onRegionChange($event)">
           <option value="">— выберите регион —</option>
           @for (region of regions(); track region.id) {
-            <option [value]="region.id">{{ region.name_ru }}</option>
+            @if (region.is_active) {
+              <option [value]="region.id">{{ region.name_ru }}</option>
+            }
           }
         </select>
       </label>
