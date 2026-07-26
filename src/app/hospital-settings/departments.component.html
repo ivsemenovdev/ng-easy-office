@@ -1,0 +1,167 @@
+<section class="hs-section">
+  <h2 class="hs-subtitle">
+    Отделения
+    <span class="hs-count">({{ departments().length }})</span>
+  </h2>
+
+  <p class="hs-description">
+    Выберите отделение, чтобы управлять оборудованием. Клик по строке — выбор отделения.
+  </p>
+
+  @if (error(); as message) {
+    <p class="hs-error" role="alert">{{ message }}</p>
+  }
+
+  @if (success(); as message) {
+    <p class="hs-success" role="status">{{ message }}</p>
+  }
+
+  @if (loading()) {
+    <tui-loader class="hs-loader" />
+  } @else {
+    <div class="hs-add">
+      <div class="hs-add-form hs-add-form-3">
+        <label class="hs-field">
+          <span>Название</span>
+          <input
+            class="hs-input"
+            type="text"
+            [(ngModel)]="newName"
+            name="departmentName"
+            placeholder="Кардиологическое"
+          />
+        </label>
+        <label class="hs-field">
+          <span>Код</span>
+          <input
+            class="hs-input"
+            type="text"
+            [(ngModel)]="newCode"
+            name="departmentCode"
+            placeholder="Необязательно"
+          />
+        </label>
+        @if (saving() && editingId() === null) {
+          <tui-loader class="hs-loader-inline" />
+        } @else {
+          <button
+            tuiButton
+            type="button"
+            appearance="primary"
+            size="m"
+            (click)="addDepartment()"
+          >
+            Добавить
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (departments().length === 0) {
+      <p class="hs-empty">У этой больницы отделений пока нет</p>
+    } @else {
+      <div class="hs-table-wrap">
+        <table class="hs-table">
+          <thead>
+            <tr>
+              <th scope="col">Название</th>
+              <th scope="col">Код</th>
+              <th scope="col">Активно</th>
+              <th scope="col">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of departments(); track item.id) {
+              <tr
+                class="hs-row-selectable"
+                [class.hs-row-selected]="isSelected(item.id)"
+                (click)="selectDepartment(item)"
+              >
+                @if (isEditing(item.id)) {
+                  <td (click)="$event.stopPropagation()">
+                    <input
+                      class="hs-input"
+                      type="text"
+                      [(ngModel)]="editName"
+                      [name]="'editDeptName' + item.id"
+                    />
+                  </td>
+                  <td (click)="$event.stopPropagation()">
+                    <input
+                      class="hs-input"
+                      type="text"
+                      [(ngModel)]="editCode"
+                      [name]="'editDeptCode' + item.id"
+                    />
+                  </td>
+                  <td (click)="$event.stopPropagation()">
+                    <label class="hs-checkbox-label">
+                      <input
+                        type="checkbox"
+                        [(ngModel)]="editIsActive"
+                        [name]="'editDeptActive' + item.id"
+                      />
+                      Активно
+                    </label>
+                  </td>
+                  <td class="hs-actions" (click)="$event.stopPropagation()">
+                    @if (saving()) {
+                      <tui-loader size="s" />
+                    } @else {
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="primary"
+                        size="s"
+                        (click)="saveEdit(item)"
+                      >
+                        Сохранить
+                      </button>
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
+                        (click)="cancelEdit()"
+                      >
+                        Отмена
+                      </button>
+                    }
+                  </td>
+                } @else {
+                  <td>{{ item.name }}</td>
+                  <td>{{ displayCode(item.code) }}</td>
+                  <td>{{ displayActive(item.is_active) }}</td>
+                  <td class="hs-actions" (click)="$event.stopPropagation()">
+                    @if (deletingId() === item.id) {
+                      <tui-loader size="s" />
+                    } @else {
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
+                        (click)="startEdit(item)"
+                      >
+                        Изменить
+                      </button>
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
+                        (click)="deleteDepartment(item)"
+                      >
+                        Удалить
+                      </button>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</section>

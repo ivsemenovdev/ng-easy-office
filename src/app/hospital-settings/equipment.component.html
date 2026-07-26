@@ -1,0 +1,284 @@
+<section class="hs-section">
+  <h2 class="hs-subtitle">
+    Оборудование
+    <span class="hs-count">({{ items().length }})</span>
+  </h2>
+
+  @if (!departmentId()) {
+    <p class="hs-empty">Выберите отделение, чтобы управлять оборудованием</p>
+  } @else {
+    @if (error(); as message) {
+      <p class="hs-error" role="alert">{{ message }}</p>
+    }
+
+    @if (success(); as message) {
+      <p class="hs-success" role="status">{{ message }}</p>
+    }
+
+    @if (loading()) {
+      <tui-loader class="hs-loader" />
+    } @else {
+      <div class="hs-add">
+        <h3 class="hs-subtitle-sm">Добавить оборудование</h3>
+        <div class="hs-form-grid">
+          <label class="hs-field">
+            <span>Вид оборудования</span>
+            <select
+              class="hs-select"
+              [(ngModel)]="newEquipmentTypeId"
+              name="newEquipmentTypeId"
+            >
+              <option [ngValue]="null">— выберите —</option>
+              @for (type of equipmentTypes(); track type.id) {
+                @if (type.is_active) {
+                  <option [ngValue]="type.id">{{ type.name }}</option>
+                }
+              }
+            </select>
+          </label>
+          <label class="hs-field">
+            <span>Наименование</span>
+            <input
+              class="hs-input"
+              type="text"
+              [(ngModel)]="newName"
+              name="newEquipmentName"
+            />
+          </label>
+          <label class="hs-field">
+            <span>Производитель</span>
+            <input
+              class="hs-input"
+              type="text"
+              [(ngModel)]="newManufacturer"
+              name="newManufacturer"
+            />
+          </label>
+          <label class="hs-field">
+            <span>Модель</span>
+            <input
+              class="hs-input"
+              type="text"
+              [(ngModel)]="newModel"
+              name="newModel"
+            />
+          </label>
+          <label class="hs-field">
+            <span>Серийный номер</span>
+            <input
+              class="hs-input"
+              type="text"
+              [(ngModel)]="newSerialNumber"
+              name="newSerialNumber"
+            />
+          </label>
+          <label class="hs-field">
+            <span>Инвентарный номер</span>
+            <input
+              class="hs-input"
+              type="text"
+              [(ngModel)]="newInventoryNumber"
+              name="newInventoryNumber"
+            />
+          </label>
+          <label class="hs-field">
+            <span>Год выпуска</span>
+            <input
+              class="hs-input"
+              type="number"
+              min="1900"
+              max="2100"
+              [(ngModel)]="newManufactureYear"
+              name="newManufactureYear"
+            />
+          </label>
+        </div>
+        <div class="hs-form-actions">
+          @if (saving() && editingId() === null) {
+            <tui-loader class="hs-loader-inline" />
+          } @else {
+            <button
+              tuiButton
+              type="button"
+              appearance="primary"
+              size="m"
+              (click)="addEquipment()"
+            >
+              Добавить
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (items().length === 0) {
+        <p class="hs-empty">В этом отделении оборудования пока нет</p>
+      } @else {
+        <div class="hs-table-wrap">
+          <table class="hs-table">
+            <thead>
+              <tr>
+                <th scope="col">Вид</th>
+                <th scope="col">Наименование</th>
+                <th scope="col">Производитель</th>
+                <th scope="col">Модель</th>
+                <th scope="col">Серийный №</th>
+                <th scope="col">Инвентарный №</th>
+                <th scope="col">Год</th>
+                <th scope="col">Активно</th>
+                <th scope="col">Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of items(); track item.id) {
+                @if (isEditing(item.id)) {
+                  <tr class="hs-detail-row">
+                    <td colspan="9">
+                      <div class="hs-form-grid">
+                        <label class="hs-field">
+                          <span>Вид оборудования</span>
+                          <select
+                            class="hs-select"
+                            [(ngModel)]="editEquipmentTypeId"
+                            [name]="'editEquipmentTypeId' + item.id"
+                          >
+                            <option [ngValue]="null">— выберите —</option>
+                            @for (type of equipmentTypes(); track type.id) {
+                              <option [ngValue]="type.id">{{ type.name }}</option>
+                            }
+                          </select>
+                        </label>
+                        <label class="hs-field">
+                          <span>Наименование</span>
+                          <input
+                            class="hs-input"
+                            type="text"
+                            [(ngModel)]="editName"
+                            [name]="'editName' + item.id"
+                          />
+                        </label>
+                        <label class="hs-field">
+                          <span>Производитель</span>
+                          <input
+                            class="hs-input"
+                            type="text"
+                            [(ngModel)]="editManufacturer"
+                            [name]="'editManufacturer' + item.id"
+                          />
+                        </label>
+                        <label class="hs-field">
+                          <span>Модель</span>
+                          <input
+                            class="hs-input"
+                            type="text"
+                            [(ngModel)]="editModel"
+                            [name]="'editModel' + item.id"
+                          />
+                        </label>
+                        <label class="hs-field">
+                          <span>Серийный номер</span>
+                          <input
+                            class="hs-input"
+                            type="text"
+                            [(ngModel)]="editSerialNumber"
+                            [name]="'editSerialNumber' + item.id"
+                          />
+                        </label>
+                        <label class="hs-field">
+                          <span>Инвентарный номер</span>
+                          <input
+                            class="hs-input"
+                            type="text"
+                            [(ngModel)]="editInventoryNumber"
+                            [name]="'editInventoryNumber' + item.id"
+                          />
+                        </label>
+                        <label class="hs-field">
+                          <span>Год выпуска</span>
+                          <input
+                            class="hs-input"
+                            type="number"
+                            min="1900"
+                            max="2100"
+                            [(ngModel)]="editManufactureYear"
+                            [name]="'editManufactureYear' + item.id"
+                          />
+                        </label>
+                        <label class="hs-field hs-checkbox-field">
+                          <span>Активно</span>
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="editIsActive"
+                            [name]="'editIsActive' + item.id"
+                          />
+                        </label>
+                      </div>
+                      <div class="hs-form-actions">
+                        @if (saving()) {
+                          <tui-loader class="hs-loader-inline" />
+                        } @else {
+                          <button
+                            tuiButton
+                            type="button"
+                            appearance="primary"
+                            size="s"
+                            (click)="saveEdit(item)"
+                          >
+                            Сохранить
+                          </button>
+                          <button
+                            tuiButton
+                            type="button"
+                            appearance="secondary"
+                            size="s"
+                            (click)="cancelEdit()"
+                          >
+                            Отмена
+                          </button>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                } @else {
+                  <tr>
+                    <td>{{ typeName(item.equipment_type_id) }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ display(item.manufacturer) }}</td>
+                    <td>{{ display(item.model) }}</td>
+                    <td>{{ display(item.serial_number) }}</td>
+                    <td>{{ display(item.inventory_number) }}</td>
+                    <td>{{ displayYear(item.manufacture_year) }}</td>
+                    <td>{{ displayActive(item.is_active) }}</td>
+                    <td class="hs-actions">
+                      @if (deletingId() === item.id) {
+                        <tui-loader size="s" />
+                      } @else {
+                        <button
+                          tuiButton
+                          type="button"
+                          appearance="secondary"
+                          size="s"
+                          (click)="startEdit(item)"
+                        >
+                          Изменить
+                        </button>
+                        <button
+                          tuiButton
+                          type="button"
+                          appearance="secondary"
+                          size="s"
+                          (click)="deleteEquipment(item)"
+                        >
+                          Удалить
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  }
+</section>

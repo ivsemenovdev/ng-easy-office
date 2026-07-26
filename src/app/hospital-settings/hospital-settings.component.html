@@ -1,0 +1,63 @@
+<section class="hs-page">
+  <header class="hs-header">
+    <h1 tuiTitle>Настройка больницы</h1>
+  </header>
+
+  <p class="hs-description">
+    Управление отделениями и оборудованием выбранной больницы, а также справочником видов оборудования.
+  </p>
+
+  @if (error(); as message) {
+    <p class="hs-error" role="alert">{{ message }}</p>
+  }
+
+  @if (loadingRegions()) {
+    <tui-loader class="hs-loader" />
+  } @else {
+    <div class="hs-filters">
+      <label class="hs-field">
+        <span>Регион</span>
+        <select class="hs-select" (change)="onRegionChange($event)">
+          <option value="">— выберите регион —</option>
+          @for (region of regions(); track region.id) {
+            @if (region.is_active) {
+              <option [value]="region.id">{{ region.name_ru }}</option>
+            }
+          }
+        </select>
+      </label>
+
+      @if (selectedRegionId()) {
+        @if (loadingHospitals()) {
+          <tui-loader class="hs-loader-inline" />
+        } @else {
+          <label class="hs-field">
+            <span>Больница</span>
+            <select class="hs-select" (change)="onHospitalChange($event)">
+              <option value="">— выберите больницу —</option>
+              @for (hospital of hospitals(); track hospital.id) {
+                <option [value]="hospital.id">{{ hospital.name }}</option>
+              }
+            </select>
+          </label>
+        }
+      }
+    </div>
+  }
+
+  <app-equipment-types (typesChanged)="onEquipmentTypesChanged()" />
+
+  @if (selectedHospitalId()) {
+    <app-departments
+      [hospitalId]="selectedHospitalId()"
+      (departmentSelected)="onDepartmentSelected($event)"
+    />
+
+    <app-equipment
+      [departmentId]="selectedDepartmentId()"
+      [equipmentTypes]="equipmentTypes()"
+    />
+  } @else if (selectedRegionId() && !loadingHospitals()) {
+    <p class="hs-empty">Выберите больницу, чтобы управлять отделениями и оборудованием</p>
+  }
+</section>

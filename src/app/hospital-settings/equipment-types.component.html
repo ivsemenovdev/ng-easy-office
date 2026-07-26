@@ -1,0 +1,143 @@
+<section class="hs-section">
+  <h2 class="hs-subtitle">
+    Виды оборудования
+    <span class="hs-count">({{ types().length }})</span>
+  </h2>
+
+  <p class="hs-description">
+    Глобальный справочник видов медицинского оборудования (МРТ, УЗИ и т.д.).
+  </p>
+
+  @if (error(); as message) {
+    <p class="hs-error" role="alert">{{ message }}</p>
+  }
+
+  @if (success(); as message) {
+    <p class="hs-success" role="status">{{ message }}</p>
+  }
+
+  @if (loading()) {
+    <tui-loader class="hs-loader" />
+  } @else {
+    <div class="hs-add">
+      <div class="hs-add-form">
+        <label class="hs-field">
+          <span>Новый вид</span>
+          <input
+            class="hs-input"
+            type="text"
+            [(ngModel)]="newName"
+            name="equipmentTypeName"
+            placeholder="МРТ"
+          />
+        </label>
+        @if (saving() && editingId() === null) {
+          <tui-loader class="hs-loader-inline" />
+        } @else {
+          <button
+            tuiButton
+            type="button"
+            appearance="primary"
+            size="m"
+            (click)="addType()"
+          >
+            Добавить
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (types().length === 0) {
+      <p class="hs-empty">Видов оборудования пока нет</p>
+    } @else {
+      <div class="hs-table-wrap">
+        <table class="hs-table">
+          <thead>
+            <tr>
+              <th scope="col">Название</th>
+              <th scope="col">Активен</th>
+              <th scope="col">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of types(); track item.id) {
+              <tr>
+                @if (isEditing(item.id)) {
+                  <td>
+                    <input
+                      class="hs-input"
+                      type="text"
+                      [(ngModel)]="editName"
+                      [name]="'editTypeName' + item.id"
+                    />
+                  </td>
+                  <td>
+                    <label class="hs-checkbox-label">
+                      <input
+                        type="checkbox"
+                        [(ngModel)]="editIsActive"
+                        [name]="'editTypeActive' + item.id"
+                      />
+                      Активен
+                    </label>
+                  </td>
+                  <td class="hs-actions">
+                    @if (saving()) {
+                      <tui-loader size="s" />
+                    } @else {
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="primary"
+                        size="s"
+                        (click)="saveEdit(item)"
+                      >
+                        Сохранить
+                      </button>
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
+                        (click)="cancelEdit()"
+                      >
+                        Отмена
+                      </button>
+                    }
+                  </td>
+                } @else {
+                  <td>{{ item.name }}</td>
+                  <td>{{ displayActive(item.is_active) }}</td>
+                  <td class="hs-actions">
+                    @if (deletingId() === item.id) {
+                      <tui-loader size="s" />
+                    } @else {
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
+                        (click)="startEdit(item)"
+                      >
+                        Изменить
+                      </button>
+                      <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary"
+                        size="s"
+                        (click)="deleteType(item)"
+                      >
+                        Удалить
+                      </button>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</section>

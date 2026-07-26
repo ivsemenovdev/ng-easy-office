@@ -1,7 +1,7 @@
 # Больницы и акты диагностики (PostgreSQL)
 
 > **Назначение:** хранение медучреждений (привязка к региону) и актов технического обслуживания / ремонта.  
-> **Статус:** миграции `004`–`007`; CRUD больниц, реквизиты и сохранение актов через API.
+> **Статус:** миграции `004`–`009`; CRUD больниц, реквизиты, отделения, оборудование, виды оборудования и сохранение актов через API.
 
 ---
 
@@ -12,6 +12,9 @@ erDiagram
     geo_regions ||--o{ hospitals : has
     hospitals ||--o| hospital_requisites : has
     hospitals ||--o{ diagnostic_acts : has
+    hospitals ||--o{ departments : has
+    departments ||--o{ equipment : has
+    equipment_types ||--o{ equipment : type
 
     geo_regions {
         int id PK
@@ -32,6 +35,33 @@ erDiagram
         text legal_address
         text inn
         varchar kpp
+    }
+
+    departments {
+        int id PK
+        int hospital_id FK
+        text name
+        varchar code
+        boolean is_active
+    }
+
+    equipment_types {
+        int id PK
+        text name
+        boolean is_active
+    }
+
+    equipment {
+        int id PK
+        int department_id FK
+        int equipment_type_id FK
+        text name
+        text manufacturer
+        text model
+        varchar serial_number
+        varchar inventory_number
+        smallint manufacture_year
+        boolean is_active
     }
 
     diagnostic_acts {
@@ -108,7 +138,59 @@ erDiagram
 
 ---
 
-## 5. Миграции
+## 5. Таблица `equipment_types`
+
+Глобальный справочник видов медицинского оборудования (не привязан к больнице).
+
+| Колонка | Тип | Описание |
+|---------|-----|----------|
+| `id` | `SERIAL PK` | |
+| `name` | `TEXT NOT NULL UNIQUE` | Название вида (МРТ, УЗИ и т.д.) |
+| `is_active` | `BOOLEAN DEFAULT true` | |
+| `created_at`, `updated_at` | `TIMESTAMPTZ` | |
+
+---
+
+## 6. Таблица `departments`
+
+Отделения (структурные подразделения) больницы.
+
+| Колонка | Тип | Описание |
+|---------|-----|----------|
+| `id` | `SERIAL PK` | |
+| `hospital_id` | `INT FK → hospitals` | Больница (`ON DELETE CASCADE`) |
+| `name` | `TEXT NOT NULL` | Название отделения |
+| `code` | `VARCHAR(20)` | Внутренний код (опционально) |
+| `is_active` | `BOOLEAN DEFAULT true` | |
+| `created_at`, `updated_at` | `TIMESTAMPTZ` | |
+
+Индекс: `departments_hospital_id_idx`.
+
+---
+
+## 7. Таблица `equipment`
+
+Единицы медицинского оборудования, принадлежащие отделению.
+
+| Колонка | Тип | Описание |
+|---------|-----|----------|
+| `id` | `SERIAL PK` | |
+| `department_id` | `INT FK → departments` | Отделение (`ON DELETE CASCADE`) |
+| `equipment_type_id` | `INT FK → equipment_types` | Вид оборудования (`ON DELETE RESTRICT`) |
+| `name` | `TEXT NOT NULL` | Наименование |
+| `manufacturer` | `TEXT` | Производитель |
+| `model` | `TEXT` | Модель |
+| `serial_number` | `VARCHAR(50)` | Серийный номер |
+| `inventory_number` | `VARCHAR(50)` | Инвентарный номер |
+| `manufacture_year` | `SMALLINT` | Год выпуска (1900–2100) |
+| `is_active` | `BOOLEAN DEFAULT true` | |
+| `created_at`, `updated_at` | `TIMESTAMPTZ` | |
+
+Индексы: `equipment_department_id_idx`, `equipment_equipment_type_id_idx`.
+
+---
+
+## 8. Миграции
 
 | Файл | Содержание |
 |------|------------|
@@ -116,6 +198,8 @@ erDiagram
 | `database/migrations/005_hospitals_acts_dml_for_app.sql` | `GRANT` для `ng_app` |
 | `database/migrations/006_hospital_requisites.sql` | DDL `hospital_requisites` |
 | `database/migrations/007_hospital_requisites_dml_for_app.sql` | `GRANT` для `ng_app` |
+| `database/migrations/008_departments_equipment.sql` | DDL `equipment_types`, `departments`, `equipment` |
+| `database/migrations/009_departments_equipment_dml_for_app.sql` | `GRANT` для `ng_app` |
 
 ```bash
 ./database/scripts/migrate.sh
@@ -123,33 +207,45 @@ erDiagram
 
 ---
 
-## 6. API
+## 9. API
 
 См. [api-backend.md](./api-backend.md):
 
 - `/api/hospitals` — CRUD
 - `/api/hospitals/:id/requisites` — GET / PUT (реквизиты)
+- `/api/hospitals/:id/departments` — CRUD отделений
+- `/api/departments/:departmentId/equipment` — CRUD оборудования
+- `/api/equipment-types` — CRUD справочника видов оборудования
 - `/api/diagnostic/acts` — POST (сохранение), GET (список по `hospital_id`)
 
 ---
 
-## 7. Связанные файлы
+## 10. Связанные файлы
 
 | Путь | Роль |
 |------|------|
 | `backend/src/services/hospitals.service.ts` | CRUD больниц |
 | `backend/src/services/hospital-requisites.service.ts` | GET / upsert реквизитов |
+| `backend/src/services/departments.service.ts` | CRUD отделений |
+| `backend/src/services/equipment.service.ts` | CRUD оборудования |
+| `backend/src/services/equipment-types.service.ts` | CRUD видов оборудования |
 | `backend/src/services/diagnostic-acts.service.ts` | Сохранение и чтение актов |
-| `backend/src/routes/hospitals.routes.ts` | HTTP-маршруты больниц и реквизитов |
+| `backend/src/routes/hospitals.routes.ts` | HTTP-маршруты больниц, реквизитов и отделений |
+| `backend/src/routes/departments.routes.ts` | HTTP-маршруты оборудования |
+| `backend/src/routes/equipment-types.routes.ts` | HTTP-маршруты видов оборудования |
 | `backend/src/routes/diagnostic.routes.ts` | parse + acts |
 | `src/app/hospitals/hospitals.component.*` | Управление больницами и реквизитами по региону |
+| `src/app/hospital-settings/hospital-settings.component.*` | Настройка отделений и оборудования |
 | `src/app/core/services/hospital-requisites-api.service.ts` | HTTP-клиент реквизитов |
+| `src/app/core/services/departments-api.service.ts` | HTTP-клиент отделений |
+| `src/app/core/services/equipment-api.service.ts` | HTTP-клиент оборудования |
+| `src/app/core/services/equipment-types-api.service.ts` | HTTP-клиент видов оборудования |
 | `src/app/diagnostic/diagnostic-import.component.*` | Импорт и сохранение |
 | `src/app/diagnostic/hospital-acts.component.*` | Просмотр актов по больнице |
 
 ---
 
-## 8. История изменений
+## 11. История изменений
 
 | Дата | Версия | Изменение |
 |------|--------|-----------|
@@ -157,3 +253,4 @@ erDiagram
 | 2026-06-20 | 0.2 | CRUD больниц на главной `/` (блок `HospitalsComponent` по региону) |
 | 2026-07-26 | 0.3 | Исправлено описание UI: отдельного маршрута `/hospitals` нет |
 | 2026-07-26 | 0.4 | Таблица `hospital_requisites` (1:1); API и UI редактирования реквизитов |
+| 2026-07-26 | 0.5 | Таблицы `equipment_types`, `departments`, `equipment`; API и UI «Настройка больницы» |

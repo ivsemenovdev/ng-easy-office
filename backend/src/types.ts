@@ -62,6 +62,39 @@ export interface HospitalRequisites {
   updated_at: string;
 }
 
+export interface EquipmentType {
+  id: number;
+  name: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Department {
+  id: number;
+  hospital_id: number;
+  name: string;
+  code: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Equipment {
+  id: number;
+  department_id: number;
+  equipment_type_id: number;
+  name: string;
+  manufacturer: string | null;
+  model: string | null;
+  serial_number: string | null;
+  inventory_number: string | null;
+  manufacture_year: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface DiagnosticAct {
   id: number;
   hospital_id: number;

@@ -135,6 +135,80 @@ export const hospitalRequisitesUpsertSchema = z.object({
   email: optionalRequisiteString,
 });
 
+export const equipmentTypeCreateSchema = z.object({
+  name: z.string().min(1),
+  is_active: z.boolean().optional().default(true),
+});
+
+export const equipmentTypeUpdateSchema = equipmentTypeCreateSchema.partial();
+
+export const equipmentTypeListQuerySchema = z.object({
+  ...pagination,
+  is_active: z
+    .enum(['true', 'false'])
+    .transform((v) => v === 'true')
+    .optional(),
+});
+
+export const departmentCreateSchema = z.object({
+  name: z.string().min(1),
+  code: z.string().max(20).nullable().optional(),
+  is_active: z.boolean().optional().default(true),
+});
+
+export const departmentUpdateSchema = departmentCreateSchema.partial();
+
+export const departmentListQuerySchema = z.object({
+  ...pagination,
+  is_active: z
+    .enum(['true', 'false'])
+    .transform((v) => v === 'true')
+    .optional(),
+});
+
+export const hospitalIdParamSchema = z.object({
+  hospitalId: z.coerce.number().int().positive(),
+});
+
+export const departmentIdParamSchema = z.object({
+  departmentId: z.coerce.number().int().positive(),
+});
+
+export const hospitalDepartmentIdParamSchema = hospitalIdParamSchema.extend({
+  id: z.coerce.number().int().positive(),
+});
+
+export const departmentEquipmentIdParamSchema = departmentIdParamSchema.extend({
+  id: z.coerce.number().int().positive(),
+});
+
+export const equipmentCreateSchema = z.object({
+  equipment_type_id: z.number().int().positive(),
+  name: z.string().min(1),
+  manufacturer: nullableString,
+  model: nullableString,
+  serial_number: z.string().max(50).nullable().optional(),
+  inventory_number: z.string().max(50).nullable().optional(),
+  manufacture_year: z
+    .number()
+    .int()
+    .min(1900)
+    .max(2100)
+    .nullable()
+    .optional(),
+  is_active: z.boolean().optional().default(true),
+});
+
+export const equipmentUpdateSchema = equipmentCreateSchema.partial();
+
+export const equipmentListQuerySchema = z.object({
+  ...pagination,
+  is_active: z
+    .enum(['true', 'false'])
+    .transform((v) => v === 'true')
+    .optional(),
+});
+
 export const diagnosticActCreateSchema = z.object({
   hospital_id: z.number().int().positive(),
   act_number: nullableString,
