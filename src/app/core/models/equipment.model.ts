@@ -1,11 +1,12 @@
-/** Единица оборудования (`equipment`). */
+/** Единица оборудования в отделении (`equipment`). */
 export interface Equipment {
   id: number;
   department_id: number;
+  equipment_model_id: number;
   equipment_type_id: number;
-  name: string;
-  manufacturer: string | null;
-  model: string | null;
+  equipment_type_name: string;
+  manufacturer: string;
+  model: string;
   serial_number: string | null;
   inventory_number: string | null;
   manufacture_year: number | null;
@@ -24,10 +25,7 @@ export interface EquipmentListResponse {
 
 /** Тело `POST /api/departments/:departmentId/equipment`. */
 export interface EquipmentCreateRequest {
-  equipment_type_id: number;
-  name: string;
-  manufacturer?: string | null;
-  model?: string | null;
+  equipment_model_id: number;
   serial_number?: string | null;
   inventory_number?: string | null;
   manufacture_year?: number | null;
@@ -36,10 +34,7 @@ export interface EquipmentCreateRequest {
 
 /** Тело `PUT/PATCH /api/departments/:departmentId/equipment/:id`. */
 export interface EquipmentUpdateRequest {
-  equipment_type_id?: number;
-  name?: string;
-  manufacturer?: string | null;
-  model?: string | null;
+  equipment_model_id?: number;
   serial_number?: string | null;
   inventory_number?: string | null;
   manufacture_year?: number | null;

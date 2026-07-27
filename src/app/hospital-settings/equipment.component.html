@@ -6,6 +6,11 @@
 
   @if (!departmentId()) {
     <p class="hs-empty">Выберите отделение, чтобы управлять оборудованием</p>
+  } @else if (equipmentModels().length === 0) {
+    <p class="hs-empty">
+      Сначала добавьте модели в
+      <a routerLink="/equipment-models">справочник моделей оборудования</a>.
+    </p>
   } @else {
     @if (error(); as message) {
       <p class="hs-error" role="alert">{{ message }}</p>
@@ -22,46 +27,21 @@
         <h3 class="hs-subtitle-sm">Добавить оборудование</h3>
         <div class="hs-form-grid">
           <label class="hs-field">
-            <span>Вид оборудования</span>
+            <span>Модель</span>
             <select
               class="hs-select"
-              [(ngModel)]="newEquipmentTypeId"
-              name="newEquipmentTypeId"
+              [(ngModel)]="newEquipmentModelId"
+              name="newEquipmentModelId"
             >
               <option [ngValue]="null">— выберите —</option>
-              @for (type of equipmentTypes(); track type.id) {
-                @if (type.is_active) {
-                  <option [ngValue]="type.id">{{ type.name }}</option>
+              @for (model of equipmentModels(); track model.id) {
+                @if (model.is_active) {
+                  <option [ngValue]="model.id">
+                    {{ model.equipment_type_name }}: {{ model.manufacturer }} {{ model.model }}
+                  </option>
                 }
               }
             </select>
-          </label>
-          <label class="hs-field">
-            <span>Наименование</span>
-            <input
-              class="hs-input"
-              type="text"
-              [(ngModel)]="newName"
-              name="newEquipmentName"
-            />
-          </label>
-          <label class="hs-field">
-            <span>Производитель</span>
-            <input
-              class="hs-input"
-              type="text"
-              [(ngModel)]="newManufacturer"
-              name="newManufacturer"
-            />
-          </label>
-          <label class="hs-field">
-            <span>Модель</span>
-            <input
-              class="hs-input"
-              type="text"
-              [(ngModel)]="newModel"
-              name="newModel"
-            />
           </label>
           <label class="hs-field">
             <span>Серийный номер</span>
@@ -118,7 +98,6 @@
             <thead>
               <tr>
                 <th scope="col">Вид</th>
-                <th scope="col">Наименование</th>
                 <th scope="col">Производитель</th>
                 <th scope="col">Модель</th>
                 <th scope="col">Серийный №</th>
@@ -132,47 +111,22 @@
               @for (item of items(); track item.id) {
                 @if (isEditing(item.id)) {
                   <tr class="hs-detail-row">
-                    <td colspan="9">
+                    <td colspan="8">
                       <div class="hs-form-grid">
                         <label class="hs-field">
-                          <span>Вид оборудования</span>
+                          <span>Модель</span>
                           <select
                             class="hs-select"
-                            [(ngModel)]="editEquipmentTypeId"
-                            [name]="'editEquipmentTypeId' + item.id"
+                            [(ngModel)]="editEquipmentModelId"
+                            [name]="'editEquipmentModelId' + item.id"
                           >
                             <option [ngValue]="null">— выберите —</option>
-                            @for (type of equipmentTypes(); track type.id) {
-                              <option [ngValue]="type.id">{{ type.name }}</option>
+                            @for (model of equipmentModels(); track model.id) {
+                              <option [ngValue]="model.id">
+                                {{ model.equipment_type_name }}: {{ model.manufacturer }} {{ model.model }}
+                              </option>
                             }
                           </select>
-                        </label>
-                        <label class="hs-field">
-                          <span>Наименование</span>
-                          <input
-                            class="hs-input"
-                            type="text"
-                            [(ngModel)]="editName"
-                            [name]="'editName' + item.id"
-                          />
-                        </label>
-                        <label class="hs-field">
-                          <span>Производитель</span>
-                          <input
-                            class="hs-input"
-                            type="text"
-                            [(ngModel)]="editManufacturer"
-                            [name]="'editManufacturer' + item.id"
-                          />
-                        </label>
-                        <label class="hs-field">
-                          <span>Модель</span>
-                          <input
-                            class="hs-input"
-                            type="text"
-                            [(ngModel)]="editModel"
-                            [name]="'editModel' + item.id"
-                          />
                         </label>
                         <label class="hs-field">
                           <span>Серийный номер</span>
@@ -240,10 +194,9 @@
                   </tr>
                 } @else {
                   <tr>
-                    <td>{{ typeName(item.equipment_type_id) }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ display(item.manufacturer) }}</td>
-                    <td>{{ display(item.model) }}</td>
+                    <td>{{ item.equipment_type_name }}</td>
+                    <td>{{ item.manufacturer }}</td>
+                    <td>{{ item.model }}</td>
                     <td>{{ display(item.serial_number) }}</td>
                     <td>{{ display(item.inventory_number) }}</td>
                     <td>{{ displayYear(item.manufacture_year) }}</td>

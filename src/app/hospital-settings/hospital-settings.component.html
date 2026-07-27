@@ -4,7 +4,7 @@
   </header>
 
   <p class="hs-description">
-    Управление отделениями и оборудованием выбранной больницы, а также справочником видов оборудования.
+    Управление отделениями и оборудованием выбранной больницы.
   </p>
 
   @if (error(); as message) {
@@ -45,8 +45,6 @@
     </div>
   }
 
-  <app-equipment-types (typesChanged)="onEquipmentTypesChanged()" />
-
   @if (selectedHospitalId()) {
     <app-departments
       [hospitalId]="selectedHospitalId()"
@@ -55,7 +53,7 @@
 
     <app-equipment
       [departmentId]="selectedDepartmentId()"
-      [equipmentTypes]="equipmentTypes()"
+      [equipmentModels]="equipmentModels()"
     />
   } @else if (selectedRegionId() && !loadingHospitals()) {
     <p class="hs-empty">Выберите больницу, чтобы управлять отделениями и оборудованием</p>

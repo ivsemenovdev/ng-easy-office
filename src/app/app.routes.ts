@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 
 import { DiagnosticImportComponent } from './diagnostic/diagnostic-import.component';
 import { HospitalActsComponent } from './diagnostic/hospital-acts.component';
+import { EquipmentModelsComponent } from './equipment-models/equipment-models.component';
+import { EquipmentTypesComponent } from './equipment-types/equipment-types.component';
 import { HospitalSettingsComponent } from './hospital-settings/hospital-settings.component';
 import { RegionsSettingsComponent } from './regions/regions-settings.component';
 
@@ -11,4 +13,6 @@ export const routes: Routes = [
   { path: 'diagnostic-import', component: DiagnosticImportComponent },
   { path: 'hospital-acts', component: HospitalActsComponent },
   { path: 'hospital-settings', component: HospitalSettingsComponent },
+  { path: 'equipment-types', component: EquipmentTypesComponent },
+  { path: 'equipment-models', component: EquipmentModelsComponent },
 ];

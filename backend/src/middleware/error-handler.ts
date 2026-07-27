@@ -11,7 +11,7 @@ export function errorHandler(
 ): void {
   if (err instanceof ZodError) {
     res.status(400).json({
-      error: 'Validation failed',
+      error: 'Ошибка валидации данных',
       code: 'VALIDATION_ERROR',
       details: err.flatten(),
     });
@@ -28,7 +28,7 @@ export function errorHandler(
 
   if (isPgUniqueViolation(err)) {
     res.status(409).json({
-      error: 'Unique constraint violation',
+      error: 'Запись с такими данными уже существует',
       code: 'CONFLICT',
     });
     return;
@@ -36,7 +36,7 @@ export function errorHandler(
 
   if (isPgForeignKeyViolation(err)) {
     res.status(409).json({
-      error: 'Referenced record does not exist or is still in use',
+      error: 'Связанная запись не найдена или используется',
       code: 'FK_VIOLATION',
     });
     return;

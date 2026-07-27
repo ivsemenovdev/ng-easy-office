@@ -150,6 +150,24 @@ export const equipmentTypeListQuerySchema = z.object({
     .optional(),
 });
 
+export const equipmentModelCreateSchema = z.object({
+  equipment_type_id: z.coerce.number().int().positive(),
+  manufacturer: z.string().trim().min(1),
+  model: z.string().trim().min(1),
+  is_active: z.boolean().optional().default(true),
+});
+
+export const equipmentModelUpdateSchema = equipmentModelCreateSchema.partial();
+
+export const equipmentModelListQuerySchema = z.object({
+  ...pagination,
+  is_active: z
+    .enum(['true', 'false'])
+    .transform((v) => v === 'true')
+    .optional(),
+  equipment_type_id: z.coerce.number().int().positive().optional(),
+});
+
 export const departmentCreateSchema = z.object({
   name: z.string().min(1),
   code: z.string().max(20).nullable().optional(),
@@ -183,10 +201,7 @@ export const departmentEquipmentIdParamSchema = departmentIdParamSchema.extend({
 });
 
 export const equipmentCreateSchema = z.object({
-  equipment_type_id: z.number().int().positive(),
-  name: z.string().min(1),
-  manufacturer: nullableString,
-  model: nullableString,
+  equipment_model_id: z.coerce.number().int().positive(),
   serial_number: z.string().max(50).nullable().optional(),
   inventory_number: z.string().max(50).nullable().optional(),
   manufacture_year: z

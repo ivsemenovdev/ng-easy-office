@@ -30,6 +30,7 @@
 | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | [database-policy.md](./database-policy.md)                 | Защита схемы: роли, `schema_migrations`, порядок миграций и сидов                            |
 | [database-regions.md](./database-regions.md)               | Схема PostgreSQL: страны и регионы (`geo_countries`, `geo_regions`), DDL, сиды, запросы      |
+| [database-er-diagram.md](./database-er-diagram.md)         | Единая ER-диаграмма всей схемы PostgreSQL приложения                                         |
 | [api-backend.md](./api-backend.md)                         | Node.js REST API: geo CRUD, export DOCX, hospitals, diagnostic parse/acts                    |
 | [diagnostic-import.md](./diagnostic-import.md)             | Импорт акта диагностики из DOCX                                                              |
 | [database-hospitals-acts.md](./database-hospitals-acts.md) | Больницы и акты диагностики в PostgreSQL                                                     |

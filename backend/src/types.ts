@@ -70,6 +70,20 @@ export interface EquipmentType {
   updated_at: string;
 }
 
+export interface EquipmentModel {
+  id: number;
+  equipment_type_id: number;
+  manufacturer: string;
+  model: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EquipmentModelWithType extends EquipmentModel {
+  equipment_type_name: string;
+}
+
 export interface Department {
   id: number;
   hospital_id: number;
@@ -83,10 +97,11 @@ export interface Department {
 export interface Equipment {
   id: number;
   department_id: number;
+  equipment_model_id: number;
   equipment_type_id: number;
-  name: string;
-  manufacturer: string | null;
-  model: string | null;
+  equipment_type_name: string;
+  manufacturer: string;
+  model: string;
   serial_number: string | null;
   inventory_number: string | null;
   manufacture_year: number | null;

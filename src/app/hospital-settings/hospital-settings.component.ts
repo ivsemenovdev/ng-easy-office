@@ -6,23 +6,21 @@ import {
 } from '@angular/core';
 import { TuiLoader, TuiTitle } from '@taiga-ui/core';
 
+import type { EquipmentModel } from '../core/models/equipment-model.model';
 import type { GeoRegion } from '../core/models/geo.model';
 import type { Hospital } from '../core/models/hospital.model';
-import type { EquipmentType } from '../core/models/equipment-type.model';
-import { EquipmentTypesApiService } from '../core/services/equipment-types-api.service';
+import { EquipmentModelsApiService } from '../core/services/equipment-models-api.service';
 import { HospitalsApiService } from '../core/services/hospitals-api.service';
 import { RegionsApiService } from '../core/services/regions-api.service';
 import { DepartmentsComponent } from './departments.component';
 import { EquipmentComponent } from './equipment.component';
-import { EquipmentTypesComponent } from './equipment-types.component';
 
-/** Настройка больницы: отделения, оборудование и справочник видов. */
+/** Настройка больницы: отделения и оборудование выбранной больницы. */
 @Component({
   selector: 'app-hospital-settings',
   imports: [
     TuiLoader,
     TuiTitle,
-    EquipmentTypesComponent,
     DepartmentsComponent,
     EquipmentComponent,
   ],
@@ -33,7 +31,7 @@ import { EquipmentTypesComponent } from './equipment-types.component';
 export class HospitalSettingsComponent {
   private readonly regionsApi = inject(RegionsApiService);
   private readonly hospitalsApi = inject(HospitalsApiService);
-  private readonly equipmentTypesApi = inject(EquipmentTypesApiService);
+  private readonly equipmentModelsApi = inject(EquipmentModelsApiService);
 
   protected readonly loadingRegions = signal(true);
   protected readonly loadingHospitals = signal(false);
@@ -41,7 +39,7 @@ export class HospitalSettingsComponent {
 
   protected readonly regions = signal<GeoRegion[]>([]);
   protected readonly hospitals = signal<Hospital[]>([]);
-  protected readonly equipmentTypes = signal<EquipmentType[]>([]);
+  protected readonly equipmentModels = signal<EquipmentModel[]>([]);
 
   protected readonly selectedRegionId = signal<number | null>(null);
   protected readonly selectedHospitalId = signal<number | null>(null);
@@ -49,7 +47,7 @@ export class HospitalSettingsComponent {
 
   constructor() {
     this.loadRegions();
-    this.loadEquipmentTypes();
+    this.loadEquipmentModels();
   }
 
   protected onRegionChange(event: Event): void {
@@ -76,10 +74,6 @@ export class HospitalSettingsComponent {
 
   protected onDepartmentSelected(departmentId: number | null): void {
     this.selectedDepartmentId.set(departmentId);
-  }
-
-  protected onEquipmentTypesChanged(): void {
-    this.loadEquipmentTypes();
   }
 
   private loadRegions(): void {
@@ -110,13 +104,13 @@ export class HospitalSettingsComponent {
     });
   }
 
-  private loadEquipmentTypes(): void {
-    this.equipmentTypesApi.list().subscribe({
+  private loadEquipmentModels(): void {
+    this.equipmentModelsApi.list().subscribe({
       next: (response) => {
-        this.equipmentTypes.set(response.items);
+        this.equipmentModels.set(response.items);
       },
       error: () => {
-        this.error.set('Не удалось загрузить виды оборудования');
+        this.error.set('Не удалось загрузить модели оборудования');
       },
     });
   }

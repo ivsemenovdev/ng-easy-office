@@ -14,10 +14,26 @@ export interface EquipmentListParams {
   is_active?: boolean;
 }
 
-const RETURNING_COLUMNS = `
-  id, department_id, equipment_type_id, name, manufacturer, model,
-  serial_number, inventory_number, manufacture_year, is_active,
-  created_at, updated_at
+const SELECT_COLUMNS = `
+  e.id,
+  e.department_id,
+  e.equipment_model_id,
+  em.equipment_type_id,
+  et.name AS equipment_type_name,
+  em.manufacturer,
+  em.model,
+  e.serial_number,
+  e.inventory_number,
+  e.manufacture_year,
+  e.is_active,
+  e.created_at,
+  e.updated_at
+`;
+
+const FROM_JOIN = `
+  FROM equipment e
+  JOIN equipment_models em ON em.id = e.equipment_model_id
+  JOIN equipment_types et ON et.id = em.equipment_type_id
 `;
 
 export class EquipmentService {
@@ -27,18 +43,18 @@ export class EquipmentService {
     departmentId: number,
     params: EquipmentListParams,
   ): Promise<ListResult<Equipment>> {
-    const conditions: string[] = ['department_id = $1'];
+    const conditions: string[] = ['e.department_id = $1'];
     const values: unknown[] = [departmentId];
 
     if (params.is_active !== undefined) {
       values.push(params.is_active);
-      conditions.push(`is_active = $${values.length}`);
+      conditions.push(`e.is_active = $${values.length}`);
     }
 
     const where = `WHERE ${conditions.join(' AND ')}`;
 
     const countResult = await this.db.query<{ count: string }>(
-      `SELECT COUNT(*)::text AS count FROM equipment ${where}`,
+      `SELECT COUNT(*)::text AS count ${FROM_JOIN} ${where}`,
       values,
     );
     const total = Number.parseInt(countResult.rows[0]?.count ?? '0', 10);
@@ -48,10 +64,10 @@ export class EquipmentService {
     const offsetIdx = values.length;
 
     const { rows } = await this.db.query<Equipment>(
-      `SELECT ${RETURNING_COLUMNS}
-       FROM equipment
+      `SELECT ${SELECT_COLUMNS}
+       ${FROM_JOIN}
        ${where}
-       ORDER BY name
+       ORDER BY em.manufacturer, em.model, e.serial_number
        LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
       values,
     );
@@ -61,9 +77,9 @@ export class EquipmentService {
 
   async getById(departmentId: number, id: number): Promise<Equipment> {
     const { rows } = await this.db.query<Equipment>(
-      `SELECT ${RETURNING_COLUMNS}
-       FROM equipment
-       WHERE id = $1 AND department_id = $2`,
+      `SELECT ${SELECT_COLUMNS}
+       ${FROM_JOIN}
+       WHERE e.id = $1 AND e.department_id = $2`,
       [id, departmentId],
     );
     const row = rows[0];
@@ -74,26 +90,23 @@ export class EquipmentService {
   }
 
   async create(departmentId: number, data: EquipmentCreate): Promise<Equipment> {
-    const { rows } = await this.db.query<Equipment>(
+    const { rows } = await this.db.query<{ id: number }>(
       `INSERT INTO equipment (
-         department_id, equipment_type_id, name, manufacturer, model,
-         serial_number, inventory_number, manufacture_year, is_active
+         department_id, equipment_model_id, serial_number,
+         inventory_number, manufacture_year, is_active
        )
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING ${RETURNING_COLUMNS}`,
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id`,
       [
         departmentId,
-        data.equipment_type_id,
-        data.name,
-        data.manufacturer ?? null,
-        data.model ?? null,
+        data.equipment_model_id,
         data.serial_number ?? null,
         data.inventory_number ?? null,
         data.manufacture_year ?? null,
         data.is_active ?? true,
       ],
     );
-    return rows[0]!;
+    return this.getById(departmentId, rows[0]!.id);
   }
 
   async update(
@@ -103,11 +116,7 @@ export class EquipmentService {
   ): Promise<Equipment> {
     const existing = await this.getById(departmentId, id);
     const merged = {
-      equipment_type_id: data.equipment_type_id ?? existing.equipment_type_id,
-      name: data.name ?? existing.name,
-      manufacturer:
-        data.manufacturer !== undefined ? data.manufacturer : existing.manufacturer,
-      model: data.model !== undefined ? data.model : existing.model,
+      equipment_model_id: data.equipment_model_id ?? existing.equipment_model_id,
       serial_number:
         data.serial_number !== undefined ? data.serial_number : existing.serial_number,
       inventory_number:
@@ -121,33 +130,26 @@ export class EquipmentService {
       is_active: data.is_active ?? existing.is_active,
     };
 
-    const { rows } = await this.db.query<Equipment>(
+    await this.db.query(
       `UPDATE equipment
-       SET equipment_type_id = $3,
-           name = $4,
-           manufacturer = $5,
-           model = $6,
-           serial_number = $7,
-           inventory_number = $8,
-           manufacture_year = $9,
-           is_active = $10,
+       SET equipment_model_id = $3,
+           serial_number = $4,
+           inventory_number = $5,
+           manufacture_year = $6,
+           is_active = $7,
            updated_at = NOW()
-       WHERE id = $1 AND department_id = $2
-       RETURNING ${RETURNING_COLUMNS}`,
+       WHERE id = $1 AND department_id = $2`,
       [
         id,
         departmentId,
-        merged.equipment_type_id,
-        merged.name,
-        merged.manufacturer,
-        merged.model,
+        merged.equipment_model_id,
         merged.serial_number,
         merged.inventory_number,
         merged.manufacture_year,
         merged.is_active,
       ],
     );
-    return rows[0]!;
+    return this.getById(departmentId, id);
   }
 
   async remove(departmentId: number, id: number): Promise<void> {

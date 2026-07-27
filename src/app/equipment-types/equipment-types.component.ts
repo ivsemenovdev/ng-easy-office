@@ -2,11 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  output,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TuiButton, TuiLoader } from '@taiga-ui/core';
+import { TuiButton, TuiLoader, TuiTitle } from '@taiga-ui/core';
 
 import type { EquipmentType } from '../core/models/equipment-type.model';
 import { EquipmentTypesApiService } from '../core/services/equipment-types-api.service';
@@ -14,15 +13,13 @@ import { EquipmentTypesApiService } from '../core/services/equipment-types-api.s
 /** CRUD справочника видов оборудования. */
 @Component({
   selector: 'app-equipment-types',
-  imports: [FormsModule, TuiButton, TuiLoader],
+  imports: [FormsModule, TuiButton, TuiLoader, TuiTitle],
   templateUrl: './equipment-types.component.html',
-  styleUrl: './hospital-settings.component.css',
+  styleUrl: '../hospital-settings/hospital-settings.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EquipmentTypesComponent {
   private readonly api = inject(EquipmentTypesApiService);
-
-  readonly typesChanged = output<void>();
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
@@ -59,7 +56,6 @@ export class EquipmentTypesComponent {
         this.success.set(`Вид «${item.name}» добавлен`);
         this.newName = '';
         this.saving.set(false);
-        this.typesChanged.emit();
       },
       error: (err) => {
         this.error.set(err.error?.error ?? 'Не удалось добавить вид оборудования');
@@ -101,7 +97,6 @@ export class EquipmentTypesComponent {
         this.success.set(`Вид «${updated.name}» сохранён`);
         this.editingId.set(null);
         this.saving.set(false);
-        this.typesChanged.emit();
       },
       error: (err) => {
         this.error.set(err.error?.error ?? 'Не удалось сохранить вид оборудования');
@@ -128,7 +123,6 @@ export class EquipmentTypesComponent {
         }
         this.success.set(`Вид «${item.name}» удалён`);
         this.deletingId.set(null);
-        this.typesChanged.emit();
       },
       error: (err) => {
         this.error.set(

@@ -3,9 +3,11 @@
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
       Настройки регионов
     </a>
+    <a routerLink="/hospital-settings" routerLinkActive="active">Настройка больницы</a>
+    <a routerLink="/equipment-types" routerLinkActive="active">Виды оборудования</a>
+    <a routerLink="/equipment-models" routerLinkActive="active">Модели оборудования</a>
     <a routerLink="/diagnostic-import" routerLinkActive="active">Импорт акта</a>
     <a routerLink="/hospital-acts" routerLinkActive="active">Акты больниц</a>
-    <a routerLink="/hospital-settings" routerLinkActive="active">Настройка больницы</a>
   </nav>
   <main class="main">
     <router-outlet />

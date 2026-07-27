@@ -35,7 +35,7 @@ createdb donetsk_test   # если ещё нет
 psql -d donetsk_test -f database/seeds/002_russia_federal_subjects.sql
 ```
 
-Миграции (по порядку): `001` … `005` в `database/migrations/`.
+Миграции (по порядку): `001` … `011` в `database/migrations/`.
 
 ### Backend
 
@@ -97,6 +97,9 @@ npm test                      # ng test (Vitest через Angular unit-test)
 | URL                  | Компонент                   | Назначение                              |
 | -------------------- | --------------------------- | --------------------------------------- |
 | `/`                  | `RegionsSettingsComponent`  | Таблица регионов + больницы             |
+| `/hospital-settings` | `HospitalSettingsComponent` | Отделения и оборудование больницы       |
+| `/equipment-types`   | `EquipmentTypesComponent`   | Справочник видов оборудования           |
+| `/equipment-models`  | `EquipmentModelsComponent`  | Справочник моделей медтехники           |
 | `/diagnostic-import` | `DiagnosticImportComponent` | Загрузка DOCX, предпросмотр, сохранение |
 | `/hospital-acts`     | `HospitalActsComponent`     | Список актов по больнице                |
 
@@ -126,15 +129,17 @@ npm test                      # ng test (Vitest через Angular unit-test)
 
 | Документ                                                   | Содержание                                                |
 | ---------------------------------------------------------- | --------------------------------------------------------- |
+| [database-er-diagram.md](./database-er-diagram.md)         | **Единая ER-диаграмма** всей схемы (9 бизнес-таблиц)    |
 | [database-policy.md](./database-policy.md)                 | Роли `ng_migrator` / `ng_app`, журнал `schema_migrations` |
 | [database-regions.md](./database-regions.md)               | `geo_countries`, `geo_regions`                            |
-| [database-hospitals-acts.md](./database-hospitals-acts.md) | `hospitals`, `diagnostic_acts`                            |
+| [database-hospitals-acts.md](./database-hospitals-acts.md) | `hospitals`, `diagnostic_acts`, оборудование              |
 | [diagnostic-import.md](./diagnostic-import.md)             | Формат DOCX, парсер                                       |
 
 Ключевые таблицы:
 
 - `geo_countries`, `geo_regions` — справочник географии (89 субъектов РФ в сиде);
-- `hospitals` — больница привязана к `region_id`;
+- `hospitals`, `hospital_requisites`, `departments` — медучреждения и структура;
+- `equipment_types`, `equipment_models`, `equipment` — виды, модели и единицы оборудования;
 - `diagnostic_acts` — акт привязан к `hospital_id`, массивы текстовых полей (JSON/array в PG).
 
 **Правило:** DDL только в `database/migrations/`, не в backend-коде.
@@ -157,6 +162,12 @@ src/app/
 │   └── regions-export.component.*     # кнопка DOCX
 ├── hospitals/
 │   └── hospitals.component.*          # CRUD больниц
+├── hospital-settings/
+│   └── hospital-settings.component.*  # отделения и оборудование
+├── equipment-types/
+│   └── equipment-types.component.*    # справочник видов оборудования
+├── equipment-models/
+│   └── equipment-models.component.*   # справочник моделей медтехники
 └── diagnostic/
     ├── diagnostic-import.component.*  # parse + save
     └── hospital-acts.component.*      # список актов
@@ -253,5 +264,6 @@ DOCX:
 | ---------- | -------------------------------------------------------------------------------------- |
 | 2026-06-21 | Создан `project-context.md`; JSDoc в core-модулях; очистка неиспользуемых импортов/CSS |
 | 2026-07-26 | Синхронизация документации с README и `api-backend.md`; уточнена команда сборки backend |
+| 2026-07-26 | Добавлена ссылка на `database-er-diagram.md`; маршруты `/hospital-settings`, `/equipment-types`; миграции `001`–`009` |
 
 <!-- Для нового чата достаточно приложить этот файл (или написать: «прочитай docs/ai/project-context.md»). Ссылка добавлена в README.md и docs/ai/README.md. -->

@@ -41,6 +41,8 @@ psql -d donetsk_test
 
 ### 3.1 ER-диаграмма (логическая)
 
+> Полная ER-диаграмма приложения (все домены): [database-er-diagram.md](./database-er-diagram.md).
+
 ```mermaid
 erDiagram
     geo_countries ||--o{ geo_regions : "has"
@@ -312,6 +314,7 @@ SELECT * FROM geo_regions WHERE parent_id = $1 AND is_active = TRUE ORDER BY sor
 | 2026-06-01 | 1.3 | Ссылка на `database-policy.md` (роли, журнал миграций) |
 | 2026-06-01 | 1.4 | REST CRUD: `api-backend.md` |
 | 2026-07-26 | 1.5 | Актуализированы шапка и §2: backend в репозитории, ссылка на домен hospitals/acts |
+| 2026-07-26 | 1.6 | Ссылка на единую ER-диаграмму приложения в [database-er-diagram.md](./database-er-diagram.md) |
 
 ---
 

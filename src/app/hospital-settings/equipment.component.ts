@@ -7,16 +7,17 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { TuiButton, TuiLoader } from '@taiga-ui/core';
 
-import type { EquipmentType } from '../core/models/equipment-type.model';
+import type { EquipmentModel } from '../core/models/equipment-model.model';
 import type { Equipment } from '../core/models/equipment.model';
 import { EquipmentApiService } from '../core/services/equipment-api.service';
 
 /** CRUD оборудования выбранного отделения. */
 @Component({
   selector: 'app-equipment',
-  imports: [FormsModule, TuiButton, TuiLoader],
+  imports: [FormsModule, RouterLink, TuiButton, TuiLoader],
   templateUrl: './equipment.component.html',
   styleUrl: './hospital-settings.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +26,7 @@ export class EquipmentComponent {
   private readonly api = inject(EquipmentApiService);
 
   readonly departmentId = input<number | null>(null);
-  readonly equipmentTypes = input<EquipmentType[]>([]);
+  readonly equipmentModels = input<EquipmentModel[]>([]);
 
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
@@ -35,18 +36,12 @@ export class EquipmentComponent {
   protected readonly success = signal<string | null>(null);
   protected readonly items = signal<Equipment[]>([]);
 
-  protected newEquipmentTypeId: number | null = null;
-  protected newName = '';
-  protected newManufacturer = '';
-  protected newModel = '';
+  protected newEquipmentModelId: number | null = null;
   protected newSerialNumber = '';
   protected newInventoryNumber = '';
   protected newManufactureYear: number | null = null;
 
-  protected editEquipmentTypeId: number | null = null;
-  protected editName = '';
-  protected editManufacturer = '';
-  protected editModel = '';
+  protected editEquipmentModelId: number | null = null;
   protected editSerialNumber = '';
   protected editInventoryNumber = '';
   protected editManufactureYear: number | null = null;
@@ -70,16 +65,11 @@ export class EquipmentComponent {
 
   protected addEquipment(): void {
     const departmentId = this.departmentId();
-    const name = this.newName.trim();
     if (!departmentId) {
       return;
     }
-    if (!this.newEquipmentTypeId) {
-      this.error.set('Выберите вид оборудования');
-      return;
-    }
-    if (!name) {
-      this.error.set('Введите наименование');
+    if (!this.newEquipmentModelId) {
+      this.error.set('Выберите модель оборудования');
       return;
     }
 
@@ -89,20 +79,15 @@ export class EquipmentComponent {
 
     this.api
       .create(departmentId, {
-        equipment_type_id: this.newEquipmentTypeId,
-        name,
-        manufacturer: this.normalizeField(this.newManufacturer),
-        model: this.normalizeField(this.newModel),
+        equipment_model_id: this.newEquipmentModelId,
         serial_number: this.normalizeField(this.newSerialNumber),
         inventory_number: this.normalizeField(this.newInventoryNumber),
         manufacture_year: this.newManufactureYear,
       })
       .subscribe({
         next: (item) => {
-          this.items.update((rows) =>
-            [...rows, item].sort((a, b) => a.name.localeCompare(b.name, 'ru')),
-          );
-          this.success.set(`Оборудование «${item.name}» добавлено`);
+          this.items.update((rows) => [...rows, item].sort(this.compareEquipment));
+          this.success.set(`Оборудование «${this.equipmentLabel(item)}» добавлено`);
           this.resetAddForm();
           this.saving.set(false);
         },
@@ -115,10 +100,7 @@ export class EquipmentComponent {
 
   protected startEdit(item: Equipment): void {
     this.editingId.set(item.id);
-    this.editEquipmentTypeId = item.equipment_type_id;
-    this.editName = item.name;
-    this.editManufacturer = item.manufacturer ?? '';
-    this.editModel = item.model ?? '';
+    this.editEquipmentModelId = item.equipment_model_id;
     this.editSerialNumber = item.serial_number ?? '';
     this.editInventoryNumber = item.inventory_number ?? '';
     this.editManufactureYear = item.manufacture_year;
@@ -133,16 +115,11 @@ export class EquipmentComponent {
 
   protected saveEdit(item: Equipment): void {
     const departmentId = this.departmentId();
-    const name = this.editName.trim();
     if (!departmentId) {
       return;
     }
-    if (!this.editEquipmentTypeId) {
-      this.error.set('Выберите вид оборудования');
-      return;
-    }
-    if (!name) {
-      this.error.set('Введите наименование');
+    if (!this.editEquipmentModelId) {
+      this.error.set('Выберите модель оборудования');
       return;
     }
 
@@ -152,10 +129,7 @@ export class EquipmentComponent {
 
     this.api
       .update(departmentId, item.id, {
-        equipment_type_id: this.editEquipmentTypeId,
-        name,
-        manufacturer: this.normalizeField(this.editManufacturer),
-        model: this.normalizeField(this.editModel),
+        equipment_model_id: this.editEquipmentModelId,
         serial_number: this.normalizeField(this.editSerialNumber),
         inventory_number: this.normalizeField(this.editInventoryNumber),
         manufacture_year: this.editManufactureYear,
@@ -164,11 +138,9 @@ export class EquipmentComponent {
       .subscribe({
         next: (updated) => {
           this.items.update((rows) =>
-            rows
-              .map((row) => (row.id === updated.id ? updated : row))
-              .sort((a, b) => a.name.localeCompare(b.name, 'ru')),
+            rows.map((row) => (row.id === updated.id ? updated : row)).sort(this.compareEquipment),
           );
-          this.success.set(`Оборудование «${updated.name}» сохранено`);
+          this.success.set(`Оборудование «${this.equipmentLabel(updated)}» сохранено`);
           this.editingId.set(null);
           this.saving.set(false);
         },
@@ -185,7 +157,7 @@ export class EquipmentComponent {
       return;
     }
 
-    const confirmed = confirm(`Удалить оборудование «${item.name}»?`);
+    const confirmed = confirm(`Удалить оборудование «${this.equipmentLabel(item)}»?`);
     if (!confirmed) {
       return;
     }
@@ -200,7 +172,7 @@ export class EquipmentComponent {
         if (this.editingId() === item.id) {
           this.editingId.set(null);
         }
-        this.success.set(`Оборудование «${item.name}» удалено`);
+        this.success.set(`Оборудование «${this.equipmentLabel(item)}» удалено`);
         this.deletingId.set(null);
       },
       error: (err) => {
@@ -214,8 +186,12 @@ export class EquipmentComponent {
     return this.editingId() === id;
   }
 
-  protected typeName(typeId: number): string {
-    return this.equipmentTypes().find((type) => type.id === typeId)?.name ?? '—';
+  protected modelLabel(modelId: number): string {
+    const model = this.equipmentModels().find((item) => item.id === modelId);
+    if (!model) {
+      return '—';
+    }
+    return `${model.equipment_type_name}: ${model.manufacturer} ${model.model}`;
   }
 
   protected display(value: string | null): string {
@@ -228,6 +204,10 @@ export class EquipmentComponent {
 
   protected displayActive(value: boolean): string {
     return value ? 'Да' : 'Нет';
+  }
+
+  protected equipmentLabel(item: Equipment): string {
+    return `${item.manufacturer} ${item.model}`;
   }
 
   private loadEquipment(departmentId: number): void {
@@ -245,10 +225,7 @@ export class EquipmentComponent {
   }
 
   private resetAddForm(): void {
-    this.newEquipmentTypeId = null;
-    this.newName = '';
-    this.newManufacturer = '';
-    this.newModel = '';
+    this.newEquipmentModelId = null;
     this.newSerialNumber = '';
     this.newInventoryNumber = '';
     this.newManufactureYear = null;
@@ -257,5 +234,17 @@ export class EquipmentComponent {
   private normalizeField(value: string): string | null {
     const trimmed = value.trim();
     return trimmed === '' ? null : trimmed;
+  }
+
+  private compareEquipment(a: Equipment, b: Equipment): number {
+    const manufacturerCompare = a.manufacturer.localeCompare(b.manufacturer, 'ru');
+    if (manufacturerCompare !== 0) {
+      return manufacturerCompare;
+    }
+    const modelCompare = a.model.localeCompare(b.model, 'ru');
+    if (modelCompare !== 0) {
+      return modelCompare;
+    }
+    return (a.serial_number ?? '').localeCompare(b.serial_number ?? '', 'ru');
   }
 }
